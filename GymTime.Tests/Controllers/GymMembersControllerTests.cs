@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GymTime.Api.Controllers;
+﻿using GymTime.Api.Controllers;
 using GymTime.Application.Dtos.GymMembers;
 using GymTime.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Xunit;
 
 namespace GymTime.Api.Tests.Controllers
 {
@@ -37,7 +33,7 @@ namespace GymTime.Api.Tests.Controllers
         {
             var fake = new FakeGymMemberService();
             fake.AllReturn = new[] { new GymMemberDto { Id = Guid.NewGuid(), Name = "John", PlanType = GymTime.Domain.Enums.PlanType.Monthly } };
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
 
             var result = await controller.GetAll();
             var ok = Assert.IsType<OkObjectResult>(result.Result);
@@ -51,7 +47,7 @@ namespace GymTime.Api.Tests.Controllers
             var fake = new FakeGymMemberService();
             var dto = new GymMemberDto { Id = Guid.NewGuid(), Name = "Ana", PlanType = GymTime.Domain.Enums.PlanType.Annual };
             fake.ByIdReturn = dto;
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
 
             var result = await controller.GetById(dto.Id);
             var ok = Assert.IsType<OkObjectResult>(result.Result);
@@ -64,7 +60,7 @@ namespace GymTime.Api.Tests.Controllers
         {
             var fake = new FakeGymMemberService();
             fake.ByIdReturn = null;
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
 
             var result = await controller.GetById(Guid.NewGuid());
             Assert.IsType<NotFoundResult>(result.Result);
@@ -76,7 +72,7 @@ namespace GymTime.Api.Tests.Controllers
             var fake = new FakeGymMemberService();
             var created = new GymMemberDto { Id = Guid.NewGuid(), Name = "Paulo", PlanType = GymTime.Domain.Enums.PlanType.Quarterly };
             fake.CreateReturn = created;
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
 
             var request = new CreateGymMemberRequest { Name = "Paulo", PlanType = GymTime.Domain.Enums.PlanType.Quarterly };
             var result = await controller.Create(request);
@@ -91,7 +87,7 @@ namespace GymTime.Api.Tests.Controllers
         public async Task Create_ReturnsValidationProblem_WhenModelInvalid()
         {
             var fake = new FakeGymMemberService();
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
             controller.ModelState.AddModelError("Name", "Required");
 
             var request = new CreateGymMemberRequest();
@@ -107,7 +103,7 @@ namespace GymTime.Api.Tests.Controllers
         {
             var fake = new FakeGymMemberService();
             fake.UpdateReturn = true;
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
 
             var id = Guid.NewGuid();
             var request = new UpdateGymMemberRequest { Name = "Updated", PlanType = GymTime.Domain.Enums.PlanType.Monthly };
@@ -122,7 +118,7 @@ namespace GymTime.Api.Tests.Controllers
         public async Task Update_ReturnsNotFound_WhenMissing()
         {
             var fake = new FakeGymMemberService { UpdateReturn = false };
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
 
             var result = await controller.Update(Guid.NewGuid(), new UpdateGymMemberRequest { Name = "x", PlanType = GymTime.Domain.Enums.PlanType.Monthly });
             Assert.IsType<NotFoundResult>(result);
@@ -132,7 +128,7 @@ namespace GymTime.Api.Tests.Controllers
         public async Task Update_ReturnsValidationProblem_WhenModelInvalid()
         {
             var fake = new FakeGymMemberService();
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
             controller.ModelState.AddModelError("Name", "Required");
 
             var result = await controller.Update(Guid.NewGuid(), new UpdateGymMemberRequest());
@@ -145,7 +141,7 @@ namespace GymTime.Api.Tests.Controllers
         public async Task Delete_ReturnsNoContent_WhenDeleted()
         {
             var fake = new FakeGymMemberService { DeleteReturn = true };
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
 
             var id = Guid.NewGuid();
             var result = await controller.Delete(id);
@@ -157,7 +153,7 @@ namespace GymTime.Api.Tests.Controllers
         public async Task Delete_ReturnsNotFound_WhenMissing()
         {
             var fake = new FakeGymMemberService { DeleteReturn = false };
-            var controller = new GymMembersController(fake);
+            var controller = new GymMemberController(fake);
 
             var result = await controller.Delete(Guid.NewGuid());
             Assert.IsType<NotFoundResult>(result);

@@ -48,4 +48,12 @@ public class BookingRepository(GymTimeDbContext context) : IBookingRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<IEnumerable<Booking>> GetAllAsync()
+    {
+        return await _context.Bookings
+            .Include(b => b.GymMember)
+            .Include(b => b.Class)
+            .ToListAsync();
+    }
 }

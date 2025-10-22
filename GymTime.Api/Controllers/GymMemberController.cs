@@ -6,19 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace GymTime.Api.Controllers;
 
 /// <summary>
-/// Endpoints para gerenciar alunos (GymMember).
+/// Endpoints to manage gym members (GymMember).
 /// </summary>
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class GymMembersController(IGymMemberService service) : ControllerBase
+public class GymMemberController(IGymMemberService service) : ControllerBase
 {
     private readonly IGymMemberService _service = service;
 
     /// <summary>
-    /// Retorna todos os alunos.
+    /// Returns all gym members.
     /// </summary>
-    /// <returns>Lista de alunos</returns>
+    /// <returns>List of gym members</returns>
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(IEnumerable<GymMemberDto>), 200)]
@@ -29,10 +29,10 @@ public class GymMembersController(IGymMemberService service) : ControllerBase
     }
 
     /// <summary>
-    /// Retorna um aluno pelo id.
+    /// Returns a gym member by id.
     /// </summary>
-    /// <param name="id">Id do aluno (GUID)</param>
-    /// <returns>Aluno encontrado</returns>
+    /// <param name="id">Gym member id (GUID)</param>
+    /// <returns>The found gym member</returns>
     [HttpGet("{id:guid}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GymMemberDto), 200)]
@@ -45,10 +45,14 @@ public class GymMembersController(IGymMemberService service) : ControllerBase
     }
 
     /// <summary>
-    /// Cria um novo aluno.
+    /// Creates a new gym member.
     /// </summary>
-    /// <param name="request">Dados do aluno a ser criado</param>
-    /// <returns>Aluno criado</returns>
+    /// <param name="request">Gym member data to create</param>
+    /// <remarks>
+    /// Business rules:
+    /// - The Name field is required and must be at most 100 characters.
+    /// - The PlanType field must be one of the enum values: Monthly (1), Quarterly (2) or Annual (3).
+    /// </remarks>
     [HttpPost]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GymMemberDto), 201)]
@@ -62,10 +66,10 @@ public class GymMembersController(IGymMemberService service) : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza um aluno existente.
+    /// Updates an existing gym member.
     /// </summary>
-    /// <param name="id">Id do aluno (GUID)</param>
-    /// <param name="request">Campos que serão atualizados</param>
+    /// <param name="id">Gym member id (GUID)</param>
+    /// <param name="request">Fields to update</param>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
@@ -81,9 +85,9 @@ public class GymMembersController(IGymMemberService service) : ControllerBase
     }
 
     /// <summary>
-    /// Remove um aluno pelo id.
+    /// Deletes a gym member by id.
     /// </summary>
-    /// <param name="id">Id do aluno (GUID)</param>
+    /// <param name="id">Gym member id (GUID)</param>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]

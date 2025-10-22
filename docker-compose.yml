@@ -1,0 +1,23 @@
+services:
+  gymtime-api:
+    build:
+      context: .
+      dockerfile: GymTime.Api/Dockerfile
+    image: gymtime-api:latest
+    container_name: gymtime-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__GymTimeDbConnection: "Host=gymtime-db;Database=gymtime;Username=postgres;Password=postgres"
+      Jwt__Issuer: "GymTime"
+      Jwt__Audience: "GymTimeClients"
+      Jwt__SecretKey: "super_secret_key"
+    ports:
+      - "5000:80"
+    networks:
+      - gymtime-network
+
+networks:
+  gymtime-network:
+    external:
+      name: pgsql_gymtime-network

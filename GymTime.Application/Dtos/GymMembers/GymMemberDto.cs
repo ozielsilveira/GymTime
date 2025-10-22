@@ -8,18 +8,24 @@ namespace GymTime.Application.Dtos.GymMembers
     public record GymMemberDto
     {
         /// <summary>
-        /// Student identifier.
+        /// Gym member identifier.
         /// </summary>
         public Guid Id { get; init; }
 
         /// <summary>
-        /// Student name.
+        /// Gym member name.
         /// </summary>
+        /// <remarks>
+        /// Full name of the gym member. Must follow the same rules as the request (not empty, maximum length).
+        /// </remarks>
         public string Name { get; init; } = default!;
 
         /// <summary>
-        /// Student plan type.
+        /// Gym member plan type.
         /// </summary>
+        /// <remarks>
+        /// Values: Monthly(1), Quarterly(2), Annual(3). Influences the monthly booking limit.
+        /// </remarks>
         public PlanType PlanType { get; init; }
     }
 }

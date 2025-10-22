@@ -1,4 +1,5 @@
 ﻿using GymTime.Api.Controllers;
+using GymTime.Application.Dtos.Bookings;
 using GymTime.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,29 @@ public class BookingControllerTests
         {
             LastBookingId = bookingId;
             return Task.FromResult("Cancelled");
+        }
+
+        public Task<IEnumerable<BookingDto>> GetBookingsForGymMemberAsync(Guid gymMemberId)
+        {
+            LastGymMemberId = gymMemberId;
+            return Task.FromResult<IEnumerable<BookingDto>>(new List<BookingDto>());
+        }
+
+        public Task<IEnumerable<BookingDto>> GetBookingsForClassAsync(Guid classId)
+        {
+            LastClassId = classId;
+            return Task.FromResult<IEnumerable<BookingDto>>(new List<BookingDto>());
+        }
+
+        public Task<BookingDto?> GetBookingByIdAsync(Guid bookingId)
+        {
+            LastBookingId = bookingId;
+            return Task.FromResult<BookingDto?>(null);
+        }
+
+        public Task<IEnumerable<BookingDto>> GetAllAsync()
+        {
+            return Task.FromResult<IEnumerable<BookingDto>>(new List<BookingDto>());
         }
     }
 
