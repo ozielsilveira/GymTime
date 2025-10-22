@@ -11,7 +11,7 @@ namespace GymTime.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ClassesController(IClassService service) : ControllerBase
+public class ClassController(IClassService service) : ControllerBase
 {
     private readonly IClassService _service = service;
 
@@ -31,6 +31,7 @@ public class ClassesController(IClassService service) : ControllerBase
     /// Returns a class by id.
     /// </summary>
     /// <param name="id">Class id (GUID).</param>
+    /// <returns>Class details or404 if not found.</returns>
     [HttpGet("{id:guid}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(ClassDto), 200)]
@@ -46,6 +47,12 @@ public class ClassesController(IClassService service) : ControllerBase
     /// Creates a new class.
     /// </summary>
     /// <param name="request">Class data to be created.</param>
+    /// <remarks>
+    /// Business rules:
+    /// - ClassType is required and max length100.
+    /// - Schedule must be in the future (UTC) and not conflict with existing classes (service layer).
+    /// - MaxCapacity must be >=1.
+    /// </remarks>
     [HttpPost]
     [Produces("application/json")]
     [ProducesResponseType(typeof(ClassDto), 201)]
@@ -63,6 +70,11 @@ public class ClassesController(IClassService service) : ControllerBase
     /// </summary>
     /// <param name="id">Class id (GUID).</param>
     /// <param name="request">Fields to be updated.</param>
+    /// <remarks>
+    /// Business rules:
+    /// - You cannot reduce MaxCapacity below the current number of bookings.
+    /// - Schedule cannot be set to the past.
+    /// </remarks>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
@@ -81,6 +93,10 @@ public class ClassesController(IClassService service) : ControllerBase
     /// Removes a class by id.
     /// </summary>
     /// <param name="id">Class id (GUID).</param>
+    /// <remarks>
+    /// Business rules:
+    /// - Removing a class will also remove associated bookings (service/repository handles cascade or prevents deletion if bookings exist).
+    /// </remarks>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]

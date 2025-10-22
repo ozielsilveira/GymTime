@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using GymTime.Api.Controllers;
+﻿using GymTime.Api.Controllers;
 using GymTime.Application.Dtos.Report;
 using GymTime.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Xunit;
 
 namespace GymTime.Api.Tests.Controllers
 {
@@ -25,7 +22,7 @@ namespace GymTime.Api.Tests.Controllers
         public async Task GetGymMemberReport_ReturnsOk_WhenFound()
         {
             var fake = new FakeReportService();
-            var dto = new ReportDto { GymMemberId = Guid.NewGuid(), GymMemberName = "Tester", PlanType = "Monthly", TotalBookingsThisMonth =3, FavoriteClassTypes = new List<string>{"Yoga"} };
+            var dto = new ReportDto { GymMemberId = Guid.NewGuid(), GymMemberName = "Tester", PlanType = "Monthly", TotalBookingsThisMonth = 3, FavoriteClassTypes = new List<string> { "Yoga" } };
             fake.Return = dto;
             var controller = new ReportController(fake);
 

@@ -36,7 +36,7 @@ public class AuthControllerTests
     [Theory]
     [InlineData("", "password")]
     [InlineData("admin", "")]
-    [InlineData("   ", "password")]
+    [InlineData(" ", "password")]
     public void Login_ReturnsBadRequest_WhenUsernameOrPasswordIsInvalid(string username, string password)
     {
         var controller = CreateController();
@@ -57,7 +57,7 @@ public class AuthControllerTests
     [Fact]
     public void Login_ReturnsTokenAndExpiry_WhenCredentialsAreValid_WithDefaultConfig()
     {
-        var controller = CreateController(); // sem chaves Jwt no IConfiguration => usa defaults
+        var controller = CreateController(); // no Jwt keys in IConfiguration => defaults are used
         var request = new AuthenticationRequest { Username = "admin", Password = "password" };
         var result = controller.Login(request);
 
@@ -74,7 +74,7 @@ public class AuthControllerTests
         Assert.Equal(expiresAt, jwt.ValidTo);
         Assert.Equal("admin", jwt.Subject);
 
-        // verifica claim "role"
+        // verify claim "role"
         Assert.Contains(jwt.Claims, c => c.Type == "role" && c.Value == "Admin");
     }
 

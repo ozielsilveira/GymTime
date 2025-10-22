@@ -1,4 +1,5 @@
-﻿using GymTime.Application.Services.Interfaces;
+﻿using GymTime.Application.Dtos.Bookings;
+using GymTime.Application.Services.Interfaces;
 using GymTime.Domain.Entities;
 using GymTime.Domain.Repositories;
 
@@ -15,7 +16,7 @@ public class BookingService(
 
     public async Task<string> BookClassAsync(Guid gymMemberId, Guid classId)
     {
-        // Get gymMember and class
+        // Get gym member and class
         var gymMember = await _gymMemberRepository.GetByIdAsync(gymMemberId);
         var classEntity = await _classRepository.GetByIdAsync(classId);
 
@@ -29,7 +30,7 @@ public class BookingService(
         if (!classEntity.HasAvailableSlots())
             return "This class is already full.";
 
-        // Get gymMember’s bookings for this month (mês + ano)
+        // Get gym member's bookings for this month (month + year)
         var gymMemberBookings = await _bookingRepository.GetBookingsForGymMemberAsync(gymMemberId);
         var now = DateTime.UtcNow;
         var currentMonthCount = gymMemberBookings.Count(b => b.CreatedAt.Month == now.Month && b.CreatedAt.Year == now.Year);
@@ -59,5 +60,43 @@ public class BookingService(
 
         await _bookingRepository.DeleteAsync(bookingId);
         return "Booking canceled successfully.";
+    }
+
+    private static BookingDto MapToDto(Booking b)
+    {
+        return new BookingDto
+        {
+            Id = b.Id,
+            GymMemberId = b.GymMemberId,
+            ClassId = b.ClassId,
+            CreatedAt = b.CreatedAt,
+            GymMemberName = b.GymMember?.Name,
+            ClassType = b.Class?.ClassType
+        };
+    }
+
+    public async Task<IEnumerable<BookingDto>> GetBookingsForGymMemberAsync(Guid gymMemberId)
+    {
+        var list = await _bookingRepository.GetBookingsForGymMemberAsync(gymMemberId);
+        return list.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<BookingDto>> GetBookingsForClassAsync(Guid classId)
+    {
+        var list = await _bookingRepository.GetBookingsForClassAsync(classId);
+        return list.Select(MapToDto);
+    }
+
+    public async Task<BookingDto?> GetBookingByIdAsync(Guid bookingId)
+    {
+        var b = await _bookingRepository.GetByIdAsync(bookingId);
+        if (b == null) return null;
+        return MapToDto(b);
+    }
+
+    public async Task<IEnumerable<BookingDto>> GetAllAsync()
+    {
+        var list = await _bookingRepository.GetAllAsync();
+        return list.Select(MapToDto);
     }
 }

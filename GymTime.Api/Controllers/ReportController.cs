@@ -1,4 +1,5 @@
-﻿using GymTime.Application.Dtos.Report;
+﻿using GymTime.Application.Dtos.Common;
+using GymTime.Application.Dtos.Report;
 using GymTime.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,15 +29,15 @@ public class ReportController(IReportService reportService) : ControllerBase
     /// </returns>
     [HttpGet("{gymMemberId}")]
     [ProducesResponseType(typeof(ReportDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponseDto))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponseDto))]
     public async Task<ActionResult<ReportDto>> GetGymMemberReport([FromRoute] Guid gymMemberId)
     {
         var report = await _reportService.GetGymMemberReportAsync(gymMemberId);
 
         if (report == null)
-            return NotFound(new { message = "Gym member not found." });
+            return NotFound(new ErrorResponseDto { Message = "Gym member not found." });
 
         return Ok(report);
     }

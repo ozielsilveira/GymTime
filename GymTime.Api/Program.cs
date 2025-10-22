@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add DbContext
 builder.Services.AddDbContext<GymTimeDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("GymTimeDbConnection") ?? throw new Exception("GymTimeDbConnection not found!")));
+ options.UseNpgsql(builder.Configuration.GetConnectionString("GymTimeDbConnection") ?? throw new Exception("GymTimeDbConnection not found!")));
 
 // Add repositories
 builder.Services.AddScoped<IGymMemberRepository, GymMemberRepository>();
@@ -43,7 +43,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"] ?? "super_secret_key"))
+    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"] ?? "super_secret_key"))
     };
 });
 
@@ -59,8 +59,8 @@ builder.Services.AddCors(options =>
     {
         // For development: allow any origin. In production, replace with .WithOrigins("<origin_list>")
         policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+     .AllowAnyHeader()
+     .AllowAnyMethod();
     });
 });
 
@@ -80,6 +80,9 @@ app.UseSwaggerInDevelopment();
 
 // Middleware
 app.UseHttpsRedirection();
+
+// Global error handling middleware (must be registered early in the pipeline)
+app.UseErrorHandling();
 
 // Enable rate limiting via extension
 app.UseGymRateLimiting();

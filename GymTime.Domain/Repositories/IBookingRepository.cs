@@ -9,4 +9,5 @@ public interface IBookingRepository
     Task<IEnumerable<Booking>> GetBookingsForGymMemberAsync(Guid gymMemberId);
     Task<IEnumerable<Booking>> GetBookingsForClassAsync(Guid classId);
     Task DeleteAsync(Guid id);
+    Task<IEnumerable<Booking>> GetAllAsync();
 }

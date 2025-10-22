@@ -21,7 +21,7 @@ public class ReportService(
         var now = DateTime.UtcNow;
         var monthBookings = bookings.Where(b => b.CreatedAt.Month == now.Month && b.CreatedAt.Year == now.Year).ToList();
 
-        // Calculate most frequent class types (proteção contra Class nulo)
+        // Calculate most frequent class types (guard against null Class references)
         var favoriteTypes = monthBookings
             .Where(b => b.Class != null)
             .GroupBy(b => b.Class!.ClassType)
