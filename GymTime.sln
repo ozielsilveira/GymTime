@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36616.10
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymTime.Api", "GymTime.Api\GymTime.Api.csproj", "{0D5AD46A-274D-4EF0-98AF-1629A3FD93F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymTime.Application", "GymTime.Application\GymTime.Application.csproj", "{E344A85D-3C92-4921-B85A-28618D8009FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymTime.Domain", "GymTime.Domain\GymTime.Domain.csproj", "{8ABF994C-00A1-4C38-9015-08D042586372}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymTime.Infrastructure", "GymTime.Infrastructure\GymTime.Infrastructure.csproj", "{D16DD070-99EB-4CF9-ACAD-425718F3AC6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymTime.Api.Tests", "GymTime.Tests\GymTime.Api.Tests.csproj", "{BA4555E7-6300-4781-8F67-7156849C467C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5375AFE1-0C7F-43B6-AEC6-F9E25EA8344F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pgsql", "pgsql", "{97155A4D-8F9A-4992-9C20-D58D1858C6E5}"
+	ProjectSection(SolutionItems) = preProject
+		pgsql\docker-compose.yml = pgsql\docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0D5AD46A-274D-4EF0-98AF-1629A3FD93F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D5AD46A-274D-4EF0-98AF-1629A3FD93F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D5AD46A-274D-4EF0-98AF-1629A3FD93F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D5AD46A-274D-4EF0-98AF-1629A3FD93F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E344A85D-3C92-4921-B85A-28618D8009FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E344A85D-3C92-4921-B85A-28618D8009FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E344A85D-3C92-4921-B85A-28618D8009FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E344A85D-3C92-4921-B85A-28618D8009FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ABF994C-00A1-4C38-9015-08D042586372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ABF994C-00A1-4C38-9015-08D042586372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ABF994C-00A1-4C38-9015-08D042586372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ABF994C-00A1-4C38-9015-08D042586372}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D16DD070-99EB-4CF9-ACAD-425718F3AC6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D16DD070-99EB-4CF9-ACAD-425718F3AC6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D16DD070-99EB-4CF9-ACAD-425718F3AC6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D16DD070-99EB-4CF9-ACAD-425718F3AC6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA4555E7-6300-4781-8F67-7156849C467C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA4555E7-6300-4781-8F67-7156849C467C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA4555E7-6300-4781-8F67-7156849C467C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA4555E7-6300-4781-8F67-7156849C467C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0D5AD46A-274D-4EF0-98AF-1629A3FD93F6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E344A85D-3C92-4921-B85A-28618D8009FD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8ABF994C-00A1-4C38-9015-08D042586372} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D16DD070-99EB-4CF9-ACAD-425718F3AC6C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{BA4555E7-6300-4781-8F67-7156849C467C} = {5375AFE1-0C7F-43B6-AEC6-F9E25EA8344F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61479EDD-9169-45A8-872F-FB9CA77B5E8F}
+	EndGlobalSection
+EndGlobal
