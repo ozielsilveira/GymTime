@@ -1,0 +1,7 @@
+# Grafana data (runtime)
+*.db
+*.db-shm
+*.db-wal
+
+# Keep provisioning files
+!provisioning/

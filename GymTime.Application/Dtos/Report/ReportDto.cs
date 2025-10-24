@@ -1,5 +1,8 @@
 namespace GymTime.Application.Dtos.Report;
 
+/// <summary>
+/// Report containing gym member statistics and booking information.
+/// </summary>
 public class ReportDto
 {
     /// <summary>

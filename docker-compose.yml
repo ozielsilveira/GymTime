@@ -1,4 +1,26 @@
 services:
+  # PostgreSQL Database
+  gymtime-db:
+    image: postgres:16
+    container_name: gymtime-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gymtime
+    ports:
+      - "5432:5432"
+    volumes:
+      - gymtime_data:/var/lib/postgresql/data
+    networks:
+      - gymtime-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # API
   gymtime-api:
     build:
       context: .
@@ -11,13 +33,65 @@ services:
       ConnectionStrings__GymTimeDbConnection: "Host=gymtime-db;Database=gymtime;Username=postgres;Password=postgres"
       Jwt__Issuer: "GymTime"
       Jwt__Audience: "GymTimeClients"
-      Jwt__SecretKey: "super_secret_key"
+      Jwt__SecretKey: "SuperSecretGymTimeKey1234567890!@#$%^&*()"
+      Observability__ServiceName: "GymTime.Api"
+      Observability__ServiceVersion: "1.0.0"
     ports:
       - "5000:80"
+    depends_on:
+      gymtime-db:
+        condition: service_healthy
+      prometheus:
+        condition: service_started
+    networks:
+      - gymtime-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  # Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: gymtime-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - gymtime-network
+
+  # Grafana
+  grafana:
+    image: grafana/grafana:latest
+    container_name: gymtime-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
     networks:
       - gymtime-network
 
 networks:
   gymtime-network:
-    external:
-      name: pgsql_gymtime-network
+    driver: bridge
+
+volumes:
+  gymtime_data:
+  prometheus-data:
+  grafana-data:
