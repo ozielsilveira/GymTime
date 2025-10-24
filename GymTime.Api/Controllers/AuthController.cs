@@ -10,29 +10,51 @@ namespace GymTime.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IConfiguration configuration) : ControllerBase
+public class AuthController(IConfiguration configuration, ILogger<AuthController> logger) : ControllerBase
 {
     private readonly IConfiguration _configuration = configuration;
+    private readonly ILogger<AuthController> _logger = logger;
 
     /// <summary>
     /// Login endpoint that returns a JWT Bearer token.
     /// </summary>
+    /// <remarks>
+    /// **Test Credentials:**
+    /// - Username: `admin`
+    /// - Password: `password`
+    /// 
+    /// Example request:
+    /// 
+    ///     POST /api/auth/login
+    ///     {
+    ///        "username": "admin",
+    ///        "password": "password"
+    ///     }
+    /// 
+    /// Returns a JWT token valid for 2 hours.
+    /// </remarks>
     [HttpPost("login")]
     [ProducesResponseType(typeof(AuthenticationResponse), 200)]
     [ProducesResponseType(400)]
     [AllowAnonymous]
     public IActionResult Login([FromBody] AuthenticationRequest request)
     {
+        _logger.LogInformation("Login attempt for user: {Username}", request?.Username ?? "null");
+
         if (request is null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
         {
+            _logger.LogWarning("Login failed: Invalid request (missing username or password)");
             return BadRequest(new { message = "Invalid request." });
         }
 
         var isValid = (request.Username == "admin" && request.Password == "password");
         if (!isValid)
         {
+            _logger.LogWarning("Login failed: Invalid credentials for user {Username}", request.Username);
             return Unauthorized(new { message = "Invalid credentials." });
         }
+
+        _logger.LogInformation("Login successful for user: {Username}", request.Username);
 
         var jwtKey = _configuration["Jwt:SecretKey"] ?? throw new Exception("jwtKey not found.");
         var jwtIssuer = _configuration["Jwt:Issuer"] ?? throw new Exception("jwtIssuer not found.");
@@ -57,6 +79,9 @@ public class AuthController(IConfiguration configuration) : ControllerBase
         );
 
         var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+        _logger.LogInformation("JWT token generated for user {Username}, expires at {ExpiresAt}", 
+        request.Username, token.ValidTo);
 
         return Ok(new AuthenticationResponse { Token = tokenString, ExpiresAt = token.ValidTo });
     }

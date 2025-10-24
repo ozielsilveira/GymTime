@@ -9,14 +9,14 @@ namespace GymTime.Application.Dtos.GymMembers;
 public class UpdateGymMemberRequest
 {
     /// <summary>
-    /// Gym member name (required, maximum100 characters).
+    /// Gym member name (required, maximum 100 characters).
     /// </summary>
     [Required]
     [StringLength(100)]
     public string Name { get; set; } = default!;
 
     /// <summary>
-    /// Plan type (1 = Monthly,2 = Quarterly,3 = Annual).
+    /// Plan type (1 = Monthly, 2 = Quarterly, 3 = Annual).
     /// </summary>
     [Required]
     [EnumDataType(typeof(PlanType))]

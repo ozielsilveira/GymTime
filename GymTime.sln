@@ -19,11 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5375AFE1-0C7F-43B6-AEC6-F9E25EA8344F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pgsql", "pgsql", "{97155A4D-8F9A-4992-9C20-D58D1858C6E5}"
-	ProjectSection(SolutionItems) = preProject
-		pgsql\docker-compose.yml = pgsql\docker-compose.yml
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymTime.Application.Tests", "GymTime.Application.Tests\GymTime.Application.Tests.csproj", "{04E838F3-73D1-4015-943A-B5DB3FE6D67E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymTime.Infrastructure.Tests", "GymTime.Infrastructure.Tests\GymTime.Infrastructure.Tests.csproj", "{A9C0B212-D217-AD58-D4AA-C74282E7D909}"

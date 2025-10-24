@@ -3,6 +3,8 @@ using GymTime.Api.Controllers;
 using GymTime.Application.Dtos.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace GymTime.Api.Tests.Controllers;
 
@@ -22,7 +24,10 @@ public class AuthControllerTests
             configuration = new ConfigurationBuilder().AddInMemoryCollection(defaults).Build();
         }
 
-        return new AuthController(configuration);
+        // Create mock logger
+        var mockLogger = new Mock<ILogger<AuthController>>();
+
+        return new AuthController(configuration, mockLogger.Object);
     }
 
     [Fact]

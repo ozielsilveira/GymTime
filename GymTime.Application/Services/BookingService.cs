@@ -43,7 +43,7 @@ public class BookingService(
         }
 
         // Validate if the gym member already has a booking for this session
-        var existingBooking = await _context.Bookings
+        bool existingBooking = await _context.Bookings
             .AnyAsync(b => b.GymMemberId == gymMemberId && b.ClassSessionId == classSessionId);
 
         if (existingBooking)
