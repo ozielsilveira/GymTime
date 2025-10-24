@@ -1,4 +1,4 @@
-﻿namespace GymTime.Domain.Entities;
+namespace GymTime.Domain.Entities;
 
 public class Booking
 {

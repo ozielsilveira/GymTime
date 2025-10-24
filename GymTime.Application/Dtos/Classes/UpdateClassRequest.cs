@@ -7,7 +7,7 @@ namespace GymTime.Application.Dtos.Classes;
 /// </summary>
 public class UpdateClassRequest
 {
-  /// <summary>
+    /// <summary>
     /// Class type/name (required, maximum 100 characters).
     /// </summary>
     /// <remarks>
@@ -20,7 +20,7 @@ public class UpdateClassRequest
     /// <summary>
     /// Maximum capacity (required, minimum 1).
     /// </summary>
-  /// <remarks>
+    /// <remarks>
     /// Business rules: reducing capacity below the current number of bookings is not allowed without prior cancellations.
     /// </remarks>
     [Required]

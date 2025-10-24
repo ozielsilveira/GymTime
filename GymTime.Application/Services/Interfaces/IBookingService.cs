@@ -1,4 +1,4 @@
-﻿
+
 using GymTime.Application.Dtos.Bookings;
 
 namespace GymTime.Application.Services.Interfaces;

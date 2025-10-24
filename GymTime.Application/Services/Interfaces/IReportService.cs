@@ -1,4 +1,4 @@
-﻿using GymTime.Application.Dtos.Report;
+using GymTime.Application.Dtos.Report;
 
 namespace GymTime.Application.Services.Interfaces;
 

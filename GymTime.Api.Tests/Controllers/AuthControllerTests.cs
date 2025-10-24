@@ -1,8 +1,8 @@
-﻿using GymTime.Api.Controllers;
+using System.IdentityModel.Tokens.Jwt;
+using GymTime.Api.Controllers;
 using GymTime.Application.Dtos.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace GymTime.Api.Tests.Controllers;
 

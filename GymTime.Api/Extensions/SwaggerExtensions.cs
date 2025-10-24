@@ -1,6 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Diagnostics.CodeAnalysis;
 
 namespace GymTime.Api.Extensions;
 
@@ -89,7 +89,7 @@ public static class SwaggerExtensions
     }
 
     // DocumentFilter to add tags for each controller
-    private class AddControllerTagsDocumentFilter : Swashbuckle.AspNetCore.SwaggerGen.IDocumentFilter
+    private class AddControllerTagsDocumentFilter : IDocumentFilter
     {
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {

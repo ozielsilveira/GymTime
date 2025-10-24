@@ -24,7 +24,7 @@ public class UpdateClassWithSessionsRequest
     /// <summary>
     /// Session IDs to be removed (optional).
     /// </summary>
-    public List<Guid> SessionIdsToRemove { get; set; } = new();
+    public List<Guid> SessionIdsToRemove { get; set; } = [];
 
     /// <summary>
     /// New sessions to be added (optional).

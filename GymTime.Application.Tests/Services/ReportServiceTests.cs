@@ -4,7 +4,7 @@ using GymTime.Domain.Enums;
 using GymTime.Domain.Repositories;
 using Moq;
 
-namespace GymTime.Api.Tests.Services;
+namespace GymTime.Application.Tests.Services;
 
 public class ReportServiceTests
 {
@@ -14,65 +14,65 @@ public class ReportServiceTests
 
     public ReportServiceTests()
     {
-      _mockBookingRepo = new Mock<IBookingRepository>();
-  _mockGymMemberRepo = new Mock<IGymMemberRepository>();
-   _service = new ReportService(_mockBookingRepo.Object, _mockGymMemberRepo.Object);
+        _mockBookingRepo = new Mock<IBookingRepository>();
+        _mockGymMemberRepo = new Mock<IGymMemberRepository>();
+        _service = new ReportService(_mockBookingRepo.Object, _mockGymMemberRepo.Object);
     }
 
     [Fact]
     public async Task GetGymMemberReportAsync_MemberNotFound_ReturnsNull()
     {
         // Arrange
-     var gymMemberId = Guid.NewGuid();
-     _mockGymMemberRepo.Setup(x => x.GetByIdAsync(gymMemberId))
-     .ReturnsAsync((GymMember?)null);
+        var gymMemberId = Guid.NewGuid();
+        _mockGymMemberRepo.Setup(x => x.GetByIdAsync(gymMemberId))
+        .ReturnsAsync((GymMember?)null);
 
-  // Act
-     var result = await _service.GetGymMemberReportAsync(gymMemberId);
+        // Act
+        var result = await _service.GetGymMemberReportAsync(gymMemberId);
 
         // Assert
         Assert.Null(result);
     }
 
     [Fact]
-  public async Task GetGymMemberReportAsync_NoBookings_ReturnsReportWithZeroBookings()
+    public async Task GetGymMemberReportAsync_NoBookings_ReturnsReportWithZeroBookings()
     {
         // Arrange
         var gymMemberId = Guid.NewGuid();
-   var gymMember = new GymMember
-  {
-   Id = gymMemberId,
-       Name = "John Doe",
-     PlanType = PlanType.Monthly
+        var gymMember = new GymMember
+        {
+            Id = gymMemberId,
+            Name = "John Doe",
+            PlanType = PlanType.Monthly
         };
 
-   _mockGymMemberRepo.Setup(x => x.GetByIdAsync(gymMemberId))
-            .ReturnsAsync(gymMember);
+        _mockGymMemberRepo.Setup(x => x.GetByIdAsync(gymMemberId))
+                 .ReturnsAsync(gymMember);
         _mockBookingRepo.Setup(x => x.GetBookingsForGymMemberAsync(gymMemberId))
-         .ReturnsAsync(new List<Booking>());
+         .ReturnsAsync([]);
 
-  // Act
-  var result = await _service.GetGymMemberReportAsync(gymMemberId);
+        // Act
+        var result = await _service.GetGymMemberReportAsync(gymMemberId);
 
         // Assert
- Assert.NotNull(result);
-     Assert.Equal(gymMemberId, result.GymMemberId);
-  Assert.Equal("John Doe", result.GymMemberName);
- Assert.Equal("Monthly", result.PlanType);
+        Assert.NotNull(result);
+        Assert.Equal(gymMemberId, result.GymMemberId);
+        Assert.Equal("John Doe", result.GymMemberName);
+        Assert.Equal("Monthly", result.PlanType);
         Assert.Equal(0, result.TotalBookingsThisMonth);
         Assert.Empty(result.FavoriteClassTypes);
     }
 
- [Fact]
+    [Fact]
     public async Task GetGymMemberReportAsync_WithBookings_ReturnsCorrectMonthlyCount()
     {
-   // Arrange
+        // Arrange
         var gymMemberId = Guid.NewGuid();
-      var gymMember = new GymMember
+        var gymMember = new GymMember
         {
-    Id = gymMemberId,
-     Name = "John Doe",
-  PlanType = PlanType.Annual
+            Id = gymMemberId,
+            Name = "John Doe",
+            PlanType = PlanType.Annual
         };
 
         var now = DateTime.UtcNow;
@@ -113,28 +113,28 @@ public class ReportServiceTests
 
         _mockGymMemberRepo.Setup(x => x.GetByIdAsync(gymMemberId))
        .ReturnsAsync(gymMember);
-    _mockBookingRepo.Setup(x => x.GetBookingsForGymMemberAsync(gymMemberId))
-         .ReturnsAsync(bookings);
+        _mockBookingRepo.Setup(x => x.GetBookingsForGymMemberAsync(gymMemberId))
+             .ReturnsAsync(bookings);
 
         // Act
         var result = await _service.GetGymMemberReportAsync(gymMemberId);
 
         // Assert
-     Assert.NotNull(result);
+        Assert.NotNull(result);
         Assert.Equal(2, result.TotalBookingsThisMonth);
         Assert.Equal(2, result.FavoriteClassTypes.Count);
- }
+    }
 
     [Fact]
     public async Task GetGymMemberReportAsync_CalculatesFavoriteClassTypes()
     {
-  // Arrange
-     var gymMemberId = Guid.NewGuid();
+        // Arrange
+        var gymMemberId = Guid.NewGuid();
         var gymMember = new GymMember
-   {
-        Id = gymMemberId,
+        {
+            Id = gymMemberId,
             Name = "Jane Doe",
-     PlanType = PlanType.Quarterly
+            PlanType = PlanType.Quarterly
         };
 
         var now = DateTime.UtcNow;
@@ -208,13 +208,13 @@ public class ReportServiceTests
             .ReturnsAsync(bookings);
 
         // Act
-  var result = await _service.GetGymMemberReportAsync(gymMemberId);
+        var result = await _service.GetGymMemberReportAsync(gymMemberId);
 
         // Assert
-      Assert.NotNull(result);
-     Assert.Equal(6, result.TotalBookingsThisMonth);
-      Assert.Equal(3, result.FavoriteClassTypes.Count);
-  Assert.Equal("Yoga", result.FavoriteClassTypes[0]); // Most frequent
+        Assert.NotNull(result);
+        Assert.Equal(6, result.TotalBookingsThisMonth);
+        Assert.Equal(3, result.FavoriteClassTypes.Count);
+        Assert.Equal("Yoga", result.FavoriteClassTypes[0]); // Most frequent
         Assert.Equal("Pilates", result.FavoriteClassTypes[1]); // Second most frequent
         Assert.Equal("Zumba", result.FavoriteClassTypes[2]); // Third most frequent
     }
@@ -226,13 +226,13 @@ public class ReportServiceTests
         var gymMemberId = Guid.NewGuid();
         var gymMember = new GymMember
         {
-    Id = gymMemberId,
+            Id = gymMemberId,
             Name = "John Doe",
-    PlanType = PlanType.Monthly
+            PlanType = PlanType.Monthly
         };
 
-     var now = DateTime.UtcNow;
-   var bookings = new List<Booking>
+        var now = DateTime.UtcNow;
+        var bookings = new List<Booking>
         {
         new()
    {
@@ -256,13 +256,13 @@ public class ReportServiceTests
    }
         };
 
- _mockGymMemberRepo.Setup(x => x.GetByIdAsync(gymMemberId))
-      .ReturnsAsync(gymMember);
+        _mockGymMemberRepo.Setup(x => x.GetByIdAsync(gymMemberId))
+             .ReturnsAsync(gymMember);
         _mockBookingRepo.Setup(x => x.GetBookingsForGymMemberAsync(gymMemberId))
             .ReturnsAsync(bookings);
 
         // Act
- var result = await _service.GetGymMemberReportAsync(gymMemberId);
+        var result = await _service.GetGymMemberReportAsync(gymMemberId);
 
         // Assert
         Assert.NotNull(result);
@@ -276,14 +276,14 @@ public class ReportServiceTests
     {
         // Arrange
         var gymMemberId = Guid.NewGuid();
-  var gymMember = new GymMember
-   {
-    Id = gymMemberId,
-    Name = "John Doe",
-      PlanType = PlanType.Monthly
-  };
+        var gymMember = new GymMember
+        {
+            Id = gymMemberId,
+            Name = "John Doe",
+            PlanType = PlanType.Monthly
+        };
 
-     var now = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
         var bookings = new List<Booking>
         {
   new()
@@ -310,13 +310,13 @@ public class ReportServiceTests
         _mockBookingRepo.Setup(x => x.GetBookingsForGymMemberAsync(gymMemberId))
      .ReturnsAsync(bookings);
 
-     // Act
-    var result = await _service.GetGymMemberReportAsync(gymMemberId);
+        // Act
+        var result = await _service.GetGymMemberReportAsync(gymMemberId);
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal(1, result.TotalBookingsThisMonth); // Only booking with valid ClassSession
         Assert.Single(result.FavoriteClassTypes);
-      Assert.Equal("Pilates", result.FavoriteClassTypes[0]);
+        Assert.Equal("Pilates", result.FavoriteClassTypes[0]);
     }
 }

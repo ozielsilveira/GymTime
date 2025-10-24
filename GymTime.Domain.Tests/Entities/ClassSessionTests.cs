@@ -1,6 +1,6 @@
 using GymTime.Domain.Entities;
 
-namespace GymTime.Api.Tests.Domain;
+namespace GymTime.Domain.Tests.Entities;
 
 public class ClassSessionTests
 {
@@ -17,7 +17,7 @@ public class ClassSessionTests
             EndTime = new TimeOnly(11, 0),
             Schedule = DateTime.UtcNow,
             Class = null,
-            Bookings = new List<Booking>()
+            Bookings = []
         };
 
         // Act
@@ -41,11 +41,11 @@ public class ClassSessionTests
             EndTime = new TimeOnly(11, 0),
             Schedule = DateTime.UtcNow,
             Class = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 },
-            Bookings = new List<Booking>
-            {
+            Bookings =
+            [
                 new() { Id = Guid.NewGuid() },
                 new() { Id = Guid.NewGuid() }
-            }
+            ]
         };
 
         // Act
@@ -69,11 +69,11 @@ public class ClassSessionTests
             EndTime = new TimeOnly(11, 0),
             Schedule = DateTime.UtcNow,
             Class = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 2 },
-            Bookings = new List<Booking>
-            {
+            Bookings =
+            [
                 new() { Id = Guid.NewGuid() },
                 new() { Id = Guid.NewGuid() }
-            }
+            ]
         };
 
         // Act
@@ -97,12 +97,12 @@ public class ClassSessionTests
             EndTime = new TimeOnly(11, 0),
             Schedule = DateTime.UtcNow,
             Class = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 2 },
-            Bookings = new List<Booking>
-            {
+            Bookings =
+            [
                 new() { Id = Guid.NewGuid() },
                 new() { Id = Guid.NewGuid() },
                 new() { Id = Guid.NewGuid() }
-            }
+            ]
         };
 
         // Act

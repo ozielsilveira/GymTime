@@ -26,7 +26,7 @@ public class ClassSession
     public DateTime Schedule { get; set; }
 
     public Class? Class { get; set; }
-    public List<Booking> Bookings { get; set; } = new();
+    public List<Booking> Bookings { get; set; } = [];
 
     public bool HasAvailableSlots()
     {

@@ -23,7 +23,7 @@ public static class RateLimitingExtensions
                 });
             });
 
-            options.AddPolicy<string>("LoginPolicy", context =>
+            options.AddPolicy("LoginPolicy", context =>
             {
                 var ip = context.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
                 return RateLimitPartition.GetTokenBucketLimiter(ip, _ => new TokenBucketRateLimiterOptions
@@ -41,7 +41,7 @@ public static class RateLimitingExtensions
             options.OnRejected = async (context, ct) =>
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                // Indicate retry seconds — here we use 60 seconds as an example
+                // Indicate retry seconds â€” here we use 60 seconds as an example
                 context.HttpContext.Response.Headers["Retry-After"] = "60";
                 await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.", ct);
             };

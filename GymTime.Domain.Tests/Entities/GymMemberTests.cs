@@ -1,44 +1,44 @@
 using GymTime.Domain.Entities;
 using GymTime.Domain.Enums;
 
-namespace GymTime.Api.Tests.Domain;
+namespace GymTime.Domain.Tests.Entities;
 
 public class GymMemberTests
 {
     [Fact]
     public void GetMonthlyBookingLimit_MonthlyPlan_Returns12()
     {
-   // Arrange
+        // Arrange
         var gymMember = new GymMember
         {
-  Id = Guid.NewGuid(),
-    Name = "John Doe",
-       PlanType = PlanType.Monthly
+            Id = Guid.NewGuid(),
+            Name = "John Doe",
+            PlanType = PlanType.Monthly
         };
 
         // Act
-      var limit = gymMember.GetMonthlyBookingLimit();
+        var limit = gymMember.GetMonthlyBookingLimit();
 
-   // Assert
+        // Assert
         Assert.Equal(12, limit);
     }
 
     [Fact]
     public void GetMonthlyBookingLimit_QuarterlyPlan_Returns20()
     {
- // Arrange
+        // Arrange
         var gymMember = new GymMember
- {
+        {
             Id = Guid.NewGuid(),
             Name = "John Doe",
-        PlanType = PlanType.Quarterly
+            PlanType = PlanType.Quarterly
         };
 
-   // Act
+        // Act
         var limit = gymMember.GetMonthlyBookingLimit();
 
         // Assert
- Assert.Equal(20, limit);
+        Assert.Equal(20, limit);
     }
 
     [Fact]
@@ -46,9 +46,9 @@ public class GymMemberTests
     {
         // Arrange
         var gymMember = new GymMember
-  {
+        {
             Id = Guid.NewGuid(),
-        Name = "John Doe",
+            Name = "John Doe",
             PlanType = PlanType.Annual
         };
 
@@ -65,30 +65,30 @@ public class GymMemberTests
         // Arrange
         var gymMember = new GymMember
         {
-   Id = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             Name = "John Doe",
             PlanType = PlanType.Monthly // 12 bookings limit
         };
 
         // Act
-var canBook = gymMember.CanBook(11);
+        var canBook = gymMember.CanBook(11);
 
-    // Assert
+        // Assert
         Assert.True(canBook);
- }
+    }
 
     [Fact]
     public void CanBook_AtLimit_ReturnsFalse()
     {
-    // Arrange
+        // Arrange
         var gymMember = new GymMember
-     {
-          Id = Guid.NewGuid(),
-          Name = "John Doe",
+        {
+            Id = Guid.NewGuid(),
+            Name = "John Doe",
             PlanType = PlanType.Monthly // 12 bookings limit
         };
 
- // Act
+        // Act
         var canBook = gymMember.CanBook(12);
 
         // Assert
@@ -101,12 +101,12 @@ var canBook = gymMember.CanBook(11);
         // Arrange
         var gymMember = new GymMember
         {
-         Id = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             Name = "John Doe",
-      PlanType = PlanType.Monthly // 12 bookings limit
+            PlanType = PlanType.Monthly // 12 bookings limit
         };
 
-      // Act
+        // Act
         var canBook = gymMember.CanBook(13);
 
         // Assert
@@ -116,18 +116,18 @@ var canBook = gymMember.CanBook(11);
     [Fact]
     public void CanBook_ZeroBookings_ReturnsTrue()
     {
-      // Arrange
+        // Arrange
         var gymMember = new GymMember
         {
-      Id = Guid.NewGuid(),
-         Name = "John Doe",
-    PlanType = PlanType.Monthly
+            Id = Guid.NewGuid(),
+            Name = "John Doe",
+            PlanType = PlanType.Monthly
         };
 
         // Act
         var canBook = gymMember.CanBook(0);
 
-      // Assert
+        // Assert
         Assert.True(canBook);
     }
 
@@ -143,15 +143,15 @@ var canBook = gymMember.CanBook(11);
         // Arrange
         var gymMember = new GymMember
         {
-       Id = Guid.NewGuid(),
-          Name = "Test Member",
-    PlanType = planType
+            Id = Guid.NewGuid(),
+            Name = "Test Member",
+            PlanType = planType
         };
 
         // Act
-    var result = gymMember.CanBook(currentBookings);
+        var result = gymMember.CanBook(currentBookings);
 
         // Assert
- Assert.Equal(expected, result);
+        Assert.Equal(expected, result);
     }
 }

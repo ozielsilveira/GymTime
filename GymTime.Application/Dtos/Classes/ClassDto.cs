@@ -29,5 +29,5 @@ public record ClassDto
     /// <summary>
     /// Sessions for this class.
     /// </summary>
-    public List<ClassSessionDto> Sessions { get; init; } = new();
+    public List<ClassSessionDto> Sessions { get; init; } = [];
 }
