@@ -27,13 +27,10 @@ docker-compose up -d --build
 
 ## ✨ Novidades
 
-### 🔄 Auto-Migration (Novo!)
-- ✅ **Não precisa mais rodar scripts de inicialização**
+### 🔄 Auto-Migration
 - ✅ Migrations aplicadas automaticamente no startup da API
 - ✅ Health checks garantem ordem correta de inicialização
 - ✅ Logs detalhados de todo o processo
-
-📖 Detalhes: [observability/AUTO-MIGRATION.md](observability/AUTO-MIGRATION.md)
 
 ---
 
@@ -82,15 +79,9 @@ O projeto inclui stack completa de observabilidade:
 - **Grafana**: Visualização de métricas (http://localhost:3000)
   - 📊 **Dashboard pré-configurado**: "GymTime API - Métricas"
   - 🔐 Login: `admin` / `admin`
-  - 📖 [Guia Completo do Grafana](observability/GRAFANA-GUIDE.md)
 - **Serilog**: Logging estruturado
 - **OpenTelemetry**: Instrumentação da API
 - **Health Checks**: `/health` endpoint
-
-📖 **Documentação Completa**: [observability/README.md](observability/README.md)  
-🚀 **Setup Rápido**: [observability/QUICKSTART.md](observability/QUICKSTART.md)  
-🔧 **Troubleshooting**: [observability/TROUBLESHOOTING.md](observability/TROUBLESHOOTING.md)  
-📊 **Grafana Dashboard**: [observability/GRAFANA-GUIDE.md](observability/GRAFANA-GUIDE.md)
 
 ### 🎯 Testar Métricas
 
@@ -292,8 +283,6 @@ Este projeto é de uso educacional.
 - Aguarde 10-15 segundos após startup
 - Verifique: http://localhost:9090/targets
 
-📖 **Mais soluções**: [observability/TROUBLESHOOTING.md](observability/TROUBLESHOOTING.md)
-
 ---
 
 ## 👤 Autor
@@ -302,12 +291,3 @@ Este projeto é de uso educacional.
 - GitHub: [@ozielsilveira](https://github.com/ozielsilveira)
 
 ---
-
-## 📚 Documentação Adicional
-
-- 📖 [Observability README](observability/README.md) - Stack de observabilidade
-- 🚀 [Quick Start](observability/QUICKSTART.md) - Setup rápido
-- 🔧 [Troubleshooting](observability/TROUBLESHOOTING.md) - Solução de problemas
-- ✨ [Auto-Migration](observability/AUTO-MIGRATION.md) - Migrations automáticas
-- 📜 [Scripts](observability/SCRIPTS.md) - Referência de scripts
-- 📊 [Grafana Dashboard](observability/GRAFANA-GUIDE.md) - Guia completo do dashboard
