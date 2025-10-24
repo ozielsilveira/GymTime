@@ -18,6 +18,7 @@ builder.Services.AddDbContext<GymTimeDbContext>(options =>
 // Add repositories
 builder.Services.AddScoped<IGymMemberRepository, GymMemberRepository>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
+builder.Services.AddScoped<IClassSessionRepository, ClassSessionRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
 // Add services
@@ -93,4 +94,4 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.Run();
+app.Run(); app.Run();

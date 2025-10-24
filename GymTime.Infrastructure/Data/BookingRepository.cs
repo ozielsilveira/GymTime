@@ -14,6 +14,7 @@ public class BookingRepository(GymTimeDbContext context) : IBookingRepository
         return await _context.Bookings
             .Include(b => b.GymMember)
             .Include(b => b.Class)
+            .Include(b => b.ClassSession)
             .FirstOrDefaultAsync(b => b.Id == id);
     }
 
@@ -22,6 +23,7 @@ public class BookingRepository(GymTimeDbContext context) : IBookingRepository
         return await _context.Bookings
             .Where(b => b.GymMemberId == gymMemberId)
             .Include(b => b.Class)
+            .Include(b => b.ClassSession)
             .ToListAsync();
     }
 
@@ -30,6 +32,17 @@ public class BookingRepository(GymTimeDbContext context) : IBookingRepository
         return await _context.Bookings
             .Where(b => b.ClassId == classId)
             .Include(b => b.GymMember)
+            .Include(b => b.ClassSession)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Booking>> GetBookingsForClassSessionAsync(Guid classSessionId)
+    {
+        return await _context.Bookings
+            .Where(b => b.ClassSessionId == classSessionId)
+            .Include(b => b.GymMember)
+            .Include(b => b.Class)
+            .Include(b => b.ClassSession)
             .ToListAsync();
     }
 
@@ -54,6 +67,7 @@ public class BookingRepository(GymTimeDbContext context) : IBookingRepository
         return await _context.Bookings
             .Include(b => b.GymMember)
             .Include(b => b.Class)
+            .Include(b => b.ClassSession)
             .ToListAsync();
     }
 }

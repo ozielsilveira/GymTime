@@ -3,6 +3,7 @@ using System;
 using GymTime.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GymTime.Infrastructure.Migrations
 {
     [DbContext(typeof(GymTimeDbContext))]
-    partial class GymTimeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251023225938_AddDateAndTimeFieldsToClassSession")]
+    partial class AddDateAndTimeFieldsToClassSession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

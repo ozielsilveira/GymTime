@@ -21,6 +21,11 @@ public record BookingDto
     public Guid ClassId { get; init; }
 
     /// <summary>
+    /// Class session identifier.
+    /// </summary>
+    public Guid ClassSessionId { get; init; }
+
+    /// <summary>
     /// Booking creation timestamp (UTC).
     /// </summary>
     public DateTime CreatedAt { get; init; }
@@ -34,4 +39,9 @@ public record BookingDto
     /// Optional class type/name (when available).
     /// </summary>
     public string? ClassType { get; init; }
+
+    /// <summary>
+    /// Optional session schedule (when available).
+    /// </summary>
+    public DateTime? SessionSchedule { get; init; }
 }

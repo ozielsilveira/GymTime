@@ -42,10 +42,41 @@ namespace GymTime.Api.Tests.Controllers
                 return Task.FromResult(UpdateReturn);
             }
 
+            public Task<ClassDto> UpdateWithSessionsAsync(Guid id, UpdateClassWithSessionsRequest request)
+            {
+                return Task.FromResult(CreateReturn ?? new ClassDto());
+            }
+
             public Task<bool> DeleteAsync(Guid id)
             {
                 LastDeleteId = id;
                 return Task.FromResult(DeleteReturn);
+            }
+
+            // Implementation of new session methods
+            public Task<IEnumerable<ClassSessionDto>> GetSessionsByClassIdAsync(Guid classId)
+            {
+                return Task.FromResult(Enumerable.Empty<ClassSessionDto>());
+            }
+
+            public Task<ClassSessionDto?> GetSessionByIdAsync(Guid classId, Guid sessionId)
+            {
+                return Task.FromResult<ClassSessionDto?>(null);
+            }
+
+            public Task<IEnumerable<ClassSessionDto>> AddSessionsToClassAsync(Guid classId, AddSessionsToClassRequest request)
+            {
+                return Task.FromResult(Enumerable.Empty<ClassSessionDto>());
+            }
+
+            public Task<bool> UpdateSessionAsync(Guid classId, Guid sessionId, UpdateClassSessionRequest request)
+            {
+                return Task.FromResult(true);
+            }
+
+            public Task<bool> DeleteSessionAsync(Guid classId, Guid sessionId)
+            {
+                return Task.FromResult(true);
             }
         }
 
@@ -53,7 +84,7 @@ namespace GymTime.Api.Tests.Controllers
         public async Task GetAll_ReturnsOkWithItems()
         {
             var fake = new FakeClassService();
-            fake.AllReturn = new[] { new ClassDto { Id = Guid.NewGuid(), ClassType = "Yoga", Schedule = DateTime.UtcNow, MaxCapacity = 10 } };
+            fake.AllReturn = new[] { new ClassDto { Id = Guid.NewGuid(), ClassType = "Yoga", MaxCapacity = 10 } };
             var controller = new ClassController(fake);
 
             var result = await controller.GetAll();
@@ -66,7 +97,7 @@ namespace GymTime.Api.Tests.Controllers
         public async Task GetById_ReturnsOk_WhenFound()
         {
             var fake = new FakeClassService();
-            var dto = new ClassDto { Id = Guid.NewGuid(), ClassType = "Pilates", Schedule = DateTime.UtcNow, MaxCapacity = 5 };
+            var dto = new ClassDto { Id = Guid.NewGuid(), ClassType = "Pilates", MaxCapacity = 5 };
             fake.ByIdReturn = dto;
             var controller = new ClassController(fake);
 
@@ -91,11 +122,20 @@ namespace GymTime.Api.Tests.Controllers
         public async Task Create_ReturnsCreated_WhenModelValid()
         {
             var fake = new FakeClassService();
-            var created = new ClassDto { Id = Guid.NewGuid(), ClassType = "Box", Schedule = DateTime.UtcNow, MaxCapacity = 12 };
+            var created = new ClassDto { Id = Guid.NewGuid(), ClassType = "Box", MaxCapacity = 12 };
             fake.CreateReturn = created;
             var controller = new ClassController(fake);
 
-            var request = new CreateClassRequest { ClassType = "Box", Schedule = DateTime.UtcNow, MaxCapacity = 12 };
+            var request = new CreateClassRequest
+            {
+                ClassType = "Box",
+                MaxCapacity = 12,
+                StartDate = DateOnly.FromDateTime(DateTime.Today),
+                EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(30)),
+                StartTime = new TimeOnly(10, 0),
+                EndTime = new TimeOnly(11, 0),
+                DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday }
+            };
             var result = await controller.Create(request);
 
             var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
@@ -127,7 +167,7 @@ namespace GymTime.Api.Tests.Controllers
             var controller = new ClassController(fake);
 
             var id = Guid.NewGuid();
-            var request = new UpdateClassRequest { ClassType = "Crossfit", Schedule = DateTime.UtcNow, MaxCapacity = 20 };
+            var request = new UpdateClassRequest { ClassType = "Crossfit", MaxCapacity = 20 };
 
             var result = await controller.Update(id, request);
             Assert.IsType<NoContentResult>(result);
@@ -141,7 +181,7 @@ namespace GymTime.Api.Tests.Controllers
             var fake = new FakeClassService { UpdateReturn = false };
             var controller = new ClassController(fake);
 
-            var result = await controller.Update(Guid.NewGuid(), new UpdateClassRequest { ClassType = "x", Schedule = DateTime.UtcNow, MaxCapacity = 1 });
+            var result = await controller.Update(Guid.NewGuid(), new UpdateClassRequest { ClassType = "x", MaxCapacity = 1 });
             Assert.IsType<NotFoundResult>(result);
         }
 

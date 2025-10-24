@@ -16,32 +16,32 @@ public class BookingController(IBookingService bookingService) : ControllerBase
     private readonly IBookingService _bookingService = bookingService;
 
     /// <summary>
-    /// Books a class for the specified student.
+    /// Books a class session for the specified student.
     /// </summary>
     /// <param name="gymMemberId">Student id (GUID) — required.</param>
-    /// <param name="classId">Class id (GUID) — required.</param>
+    /// <param name="classSessionId">Class session id (GUID) — required.</param>
     /// <returns>Message indicating the result of the operation (string returned by BookingService).</returns>
     /// <remarks>
     /// Business rules:
     /// - Student must exist.
-    /// - Class must exist and have available capacity.
+    /// - Class session must exist and have available capacity.
     /// - Student cannot exceed the monthly booking limit determined by their plan (Monthly=12, Quarterly=20, Annual=30).
     /// - Bookings are counted using UTC month/year.
     /// </remarks>
-    /// <response code="200">Booking successful or a descriptive message explaining why it failed (e.g., class full, booking limit reached).</response>
+    /// <response code="200">Booking successful or a descriptive message explaining why it failed (e.g., class session full, booking limit reached).</response>
     /// <response code="400">Invalid parameters (e.g.: empty GUID or invalid format).</response>
-    /// <response code="404">Student or class not found.</response>
+    /// <response code="404">Student or class session not found.</response>
     /// <response code="500">Internal server error.</response>
-    [HttpPost("{gymMemberId:guid}/{classId:guid}")]
+    [HttpPost("{gymMemberId:guid}/{classSessionId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponseDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponseDto))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponseDto))]
     public async Task<IActionResult> Book(
     [FromRoute(Name = "gymMemberId")][Required(ErrorMessage = "gymMemberId is required")] Guid gymMemberId,
-    [FromRoute(Name = "classId")][Required(ErrorMessage = "classId is required")] Guid classId)
+    [FromRoute(Name = "classSessionId")][Required(ErrorMessage = "classSessionId is required")] Guid classSessionId)
     {
-        var result = await _bookingService.BookClassAsync(gymMemberId, classId);
+        var result = await _bookingService.BookClassAsync(gymMemberId, classSessionId);
         return Ok(result);
     }
 
