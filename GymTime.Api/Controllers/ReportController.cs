@@ -1,4 +1,4 @@
-﻿using GymTime.Application.Dtos.Common;
+using GymTime.Application.Dtos.Common;
 using GymTime.Application.Dtos.Report;
 using GymTime.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -37,7 +37,9 @@ public class ReportController(IReportService reportService) : ControllerBase
         var report = await _reportService.GetGymMemberReportAsync(gymMemberId);
 
         if (report == null)
+        {
             return NotFound(new ErrorResponseDto { Message = "Gym member not found." });
+        }
 
         return Ok(report);
     }

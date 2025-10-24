@@ -1,4 +1,4 @@
-﻿using GymTime.Domain.Entities;
+using GymTime.Domain.Entities;
 
 namespace GymTime.Domain.Repositories;
 

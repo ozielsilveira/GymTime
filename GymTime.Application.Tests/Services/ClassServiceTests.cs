@@ -4,7 +4,7 @@ using GymTime.Domain.Entities;
 using GymTime.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace GymTime.Api.Tests.Services;
+namespace GymTime.Application.Tests.Services;
 
 public class ClassServiceTests : IDisposable
 {
@@ -13,28 +13,28 @@ public class ClassServiceTests : IDisposable
 
     public ClassServiceTests()
     {
-   var options = new DbContextOptionsBuilder<GymTimeDbContext>()
-  .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-      .Options;
+        var options = new DbContextOptionsBuilder<GymTimeDbContext>()
+       .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+           .Options;
 
         _context = new GymTimeDbContext(options);
-      _service = new ClassService(_context);
+        _service = new ClassService(_context);
     }
 
     [Fact]
     public async Task GetAllAsync_ReturnsAllClasses()
     {
         // Arrange
-      await _context.Classes.AddRangeAsync(
-          new Class { Id = Guid.NewGuid(), ClassType = "Yoga", MaxCapacity = 10 },
-      new Class { Id = Guid.NewGuid(), ClassType = "Pilates", MaxCapacity = 15 }
- );
+        await _context.Classes.AddRangeAsync(
+            new Class { Id = Guid.NewGuid(), ClassType = "Yoga", MaxCapacity = 10 },
+        new Class { Id = Guid.NewGuid(), ClassType = "Pilates", MaxCapacity = 15 }
+   );
         await _context.SaveChangesAsync();
 
         // Act
-  var result = await _service.GetAllAsync();
+        var result = await _service.GetAllAsync();
 
-  // Assert
+        // Assert
         Assert.Equal(2, result.Count());
     }
 
@@ -43,18 +43,18 @@ public class ClassServiceTests : IDisposable
     {
         // Arrange
         var id = Guid.NewGuid();
-  await _context.Classes.AddAsync(
-            new Class { Id = id, ClassType = "Yoga", MaxCapacity = 10 }
-    );
+        await _context.Classes.AddAsync(
+                  new Class { Id = id, ClassType = "Yoga", MaxCapacity = 10 }
+          );
         await _context.SaveChangesAsync();
 
-  // Act
-    var result = await _service.GetByIdAsync(id);
+        // Act
+        var result = await _service.GetByIdAsync(id);
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal("Yoga", result.ClassType);
-      Assert.Equal(10, result.MaxCapacity);
+        Assert.Equal(10, result.MaxCapacity);
     }
 
     [Fact]
@@ -70,19 +70,19 @@ public class ClassServiceTests : IDisposable
         Assert.Null(result);
     }
 
-  [Fact]
+    [Fact]
     public async Task CreateAsync_ValidRequest_CreatesClassWithSessions()
     {
         // Arrange
         var request = new CreateClassRequest
         {
-    ClassType = "Yoga",
-         MaxCapacity = 10,
-   StartDate = DateOnly.FromDateTime(DateTime.Today),
-        EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
-       StartTime = new TimeOnly(10, 0),
-    EndTime = new TimeOnly(11, 0),
-            DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday }
+            ClassType = "Yoga",
+            MaxCapacity = 10,
+            StartDate = DateOnly.FromDateTime(DateTime.Today),
+            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
+            DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday]
         };
 
         // Act
@@ -91,24 +91,24 @@ public class ClassServiceTests : IDisposable
         // Assert
         Assert.NotNull(result);
         Assert.Equal("Yoga", result.ClassType);
-   Assert.Equal(10, result.MaxCapacity);
+        Assert.Equal(10, result.MaxCapacity);
         Assert.NotEmpty(result.Sessions);
     }
 
     [Fact]
     public async Task CreateAsync_EndTimeBeforeStartTime_ThrowsException()
     {
-   // Arrange
+        // Arrange
         var request = new CreateClassRequest
         {
             ClassType = "Yoga",
-   MaxCapacity = 10,
+            MaxCapacity = 10,
             StartDate = DateOnly.FromDateTime(DateTime.Today),
             EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
-         StartTime = new TimeOnly(11, 0),
-   EndTime = new TimeOnly(10, 0), // Invalid
-   DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }
-    };
+            StartTime = new TimeOnly(11, 0),
+            EndTime = new TimeOnly(10, 0), // Invalid
+            DaysOfWeek = [DayOfWeek.Monday]
+        };
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(
@@ -119,19 +119,19 @@ public class ClassServiceTests : IDisposable
     [Fact]
     public async Task CreateAsync_EndDateBeforeStartDate_ThrowsException()
     {
-      // Arrange
+        // Arrange
         var request = new CreateClassRequest
         {
-     ClassType = "Yoga",
- MaxCapacity = 10,
-      StartDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
-          EndDate = DateOnly.FromDateTime(DateTime.Today), // Invalid
-       StartTime = new TimeOnly(10, 0),
-       EndTime = new TimeOnly(11, 0),
-            DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }
-      };
+            ClassType = "Yoga",
+            MaxCapacity = 10,
+            StartDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
+            EndDate = DateOnly.FromDateTime(DateTime.Today), // Invalid
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
+            DaysOfWeek = [DayOfWeek.Monday]
+        };
 
-// Act & Assert
+        // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(
  async () => await _service.CreateAsync(request)
         );
@@ -140,17 +140,17 @@ public class ClassServiceTests : IDisposable
     [Fact]
     public async Task UpdateAsync_ClassExists_UpdatesClass()
     {
-      // Arrange
-    var id = Guid.NewGuid();
-  await _context.Classes.AddAsync(
-         new Class { Id = id, ClassType = "Yoga", MaxCapacity = 10 }
-  );
-    await _context.SaveChangesAsync();
+        // Arrange
+        var id = Guid.NewGuid();
+        await _context.Classes.AddAsync(
+               new Class { Id = id, ClassType = "Yoga", MaxCapacity = 10 }
+        );
+        await _context.SaveChangesAsync();
 
         var updateRequest = new UpdateClassRequest
         {
-     ClassType = "Advanced Yoga",
-        MaxCapacity = 15
+            ClassType = "Advanced Yoga",
+            MaxCapacity = 15
         };
 
         // Act
@@ -161,7 +161,7 @@ public class ClassServiceTests : IDisposable
         var updated = await _context.Classes.FindAsync(id);
         Assert.Equal("Advanced Yoga", updated?.ClassType);
         Assert.Equal(15, updated?.MaxCapacity);
-}
+    }
 
     [Fact]
     public async Task UpdateAsync_ReduceCapacityWithBookings_ThrowsException()
@@ -169,32 +169,32 @@ public class ClassServiceTests : IDisposable
         // Arrange
         var classId = Guid.NewGuid();
         var sessionId = Guid.NewGuid();
-        
+
         var classEntity = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 };
         var session = new ClassSession
-   {
-  Id = sessionId,
-     ClassId = classId,
-   Date = DateOnly.FromDateTime(DateTime.Today),
-  StartTime = new TimeOnly(10, 0),
-    EndTime = new TimeOnly(11, 0),
+        {
+            Id = sessionId,
+            ClassId = classId,
+            Date = DateOnly.FromDateTime(DateTime.Today),
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
             Schedule = DateTime.UtcNow,
-     Bookings = new List<Booking>
-  {
+            Bookings =
+  [
            new() { Id = Guid.NewGuid(), GymMemberId = Guid.NewGuid(), ClassId = classId, ClassSessionId = sessionId },
                 new() { Id = Guid.NewGuid(), GymMemberId = Guid.NewGuid(), ClassId = classId, ClassSessionId = sessionId },
           new() { Id = Guid.NewGuid(), GymMemberId = Guid.NewGuid(), ClassId = classId, ClassSessionId = sessionId }
-            }
+            ]
         };
 
         classEntity.Sessions.Add(session);
         await _context.Classes.AddAsync(classEntity);
-      await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         var updateRequest = new UpdateClassRequest
-     {
-      ClassType = "Yoga",
- MaxCapacity = 2 // Less than current bookings
+        {
+            ClassType = "Yoga",
+            MaxCapacity = 2 // Less than current bookings
         };
 
         // Act & Assert
@@ -206,18 +206,18 @@ public class ClassServiceTests : IDisposable
     [Fact]
     public async Task UpdateAsync_ClassNotFound_ReturnsFalse()
     {
-      // Arrange
+        // Arrange
         var id = Guid.NewGuid();
         var updateRequest = new UpdateClassRequest
-  {
+        {
             ClassType = "Yoga",
-  MaxCapacity = 15
+            MaxCapacity = 15
         };
 
- // Act
+        // Act
         var result = await _service.UpdateAsync(id, updateRequest);
 
-// Assert
+        // Assert
         Assert.False(result);
     }
 
@@ -229,13 +229,13 @@ public class ClassServiceTests : IDisposable
         await _context.Classes.AddAsync(
         new Class { Id = id, ClassType = "Yoga", MaxCapacity = 10 }
     );
-    await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
-    // Act
+        // Act
         var result = await _service.DeleteAsync(id);
 
-   // Assert
-     Assert.True(result);
+        // Assert
+        Assert.True(result);
         var deleted = await _context.Classes.FindAsync(id);
         Assert.Null(deleted);
     }
@@ -246,20 +246,20 @@ public class ClassServiceTests : IDisposable
         // Arrange
         var classId = Guid.NewGuid();
         var sessionId = Guid.NewGuid();
-        
+
         var classEntity = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 };
         var session = new ClassSession
         {
             Id = sessionId,
-ClassId = classId,
-        Date = DateOnly.FromDateTime(DateTime.Today),
+            ClassId = classId,
+            Date = DateOnly.FromDateTime(DateTime.Today),
             StartTime = new TimeOnly(10, 0),
-       EndTime = new TimeOnly(11, 0),
-      Schedule = DateTime.UtcNow,
-     Bookings = new List<Booking>
-            {
+            EndTime = new TimeOnly(11, 0),
+            Schedule = DateTime.UtcNow,
+            Bookings =
+            [
   new() { Id = Guid.NewGuid(), GymMemberId = Guid.NewGuid(), ClassId = classId, ClassSessionId = sessionId }
-    }
+    ]
         };
 
         classEntity.Sessions.Add(session);
@@ -291,26 +291,26 @@ ClassId = classId,
         // Arrange
         var classId = Guid.NewGuid();
         var classEntity = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 };
-        
+
         var session1 = new ClassSession
-    {
-          Id = Guid.NewGuid(),
-  ClassId = classId,
+        {
+            Id = Guid.NewGuid(),
+            ClassId = classId,
             Date = DateOnly.FromDateTime(DateTime.Today),
-     StartTime = new TimeOnly(10, 0),
-   EndTime = new TimeOnly(11, 0),
-       Schedule = DateTime.UtcNow
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
+            Schedule = DateTime.UtcNow
         };
 
-    var session2 = new ClassSession
+        var session2 = new ClassSession
         {
- Id = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             ClassId = classId,
-  Date = DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
-  StartTime = new TimeOnly(10, 0),
-    EndTime = new TimeOnly(11, 0),
-        Schedule = DateTime.UtcNow.AddDays(1)
-      };
+            Date = DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
+            Schedule = DateTime.UtcNow.AddDays(1)
+        };
 
         classEntity.Sessions.Add(session1);
         classEntity.Sessions.Add(session2);
@@ -318,10 +318,10 @@ ClassId = classId,
         await _context.SaveChangesAsync();
 
         // Act
-  var result = await _service.GetSessionsByClassIdAsync(classId);
+        var result = await _service.GetSessionsByClassIdAsync(classId);
 
         // Assert
-   Assert.Equal(2, result.Count());
+        Assert.Equal(2, result.Count());
     }
 
     [Fact]
@@ -332,37 +332,37 @@ ClassId = classId,
         await _context.Classes.AddAsync(
   new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 }
         );
-await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
-     var request = new AddSessionsToClassRequest
+        var request = new AddSessionsToClassRequest
         {
-       StartDate = DateOnly.FromDateTime(DateTime.Today),
+            StartDate = DateOnly.FromDateTime(DateTime.Today),
             EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
-StartTime = new TimeOnly(10, 0),
-     EndTime = new TimeOnly(11, 0),
-            DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday }
-    };
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
+            DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday]
+        };
 
-   // Act
+        // Act
         var result = await _service.AddSessionsToClassAsync(classId, request);
 
         // Assert
         Assert.NotEmpty(result);
-  }
+    }
 
     [Fact]
- public async Task AddSessionsToClassAsync_ClassNotFound_ThrowsException()
+    public async Task AddSessionsToClassAsync_ClassNotFound_ThrowsException()
     {
- // Arrange
+        // Arrange
         var classId = Guid.NewGuid();
         var request = new AddSessionsToClassRequest
         {
-    StartDate = DateOnly.FromDateTime(DateTime.Today),
-     EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
-       StartTime = new TimeOnly(10, 0),
-      EndTime = new TimeOnly(11, 0),
-        DaysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday }
-    };
+            StartDate = DateOnly.FromDateTime(DateTime.Today),
+            EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(7)),
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
+            DaysOfWeek = [DayOfWeek.Monday]
+        };
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(
@@ -375,22 +375,22 @@ StartTime = new TimeOnly(10, 0),
     {
         // Arrange
         var classId = Guid.NewGuid();
-   var sessionId = Guid.NewGuid();
-        
-        var classEntity = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 };
-     var session = new ClassSession
-        {
-  Id = sessionId,
-            ClassId = classId,
-    Date = DateOnly.FromDateTime(DateTime.Today),
-            StartTime = new TimeOnly(10, 0),
-  EndTime = new TimeOnly(11, 0),
-            Schedule = DateTime.UtcNow
- };
+        var sessionId = Guid.NewGuid();
 
-    classEntity.Sessions.Add(session);
-    await _context.Classes.AddAsync(classEntity);
-   await _context.SaveChangesAsync();
+        var classEntity = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 };
+        var session = new ClassSession
+        {
+            Id = sessionId,
+            ClassId = classId,
+            Date = DateOnly.FromDateTime(DateTime.Today),
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
+            Schedule = DateTime.UtcNow
+        };
+
+        classEntity.Sessions.Add(session);
+        await _context.Classes.AddAsync(classEntity);
+        await _context.SaveChangesAsync();
 
         // Act
         var result = await _service.DeleteSessionAsync(classId, sessionId);
@@ -405,22 +405,22 @@ StartTime = new TimeOnly(10, 0),
     public async Task DeleteSessionAsync_SessionWithBookings_ThrowsException()
     {
         // Arrange
- var classId = Guid.NewGuid();
+        var classId = Guid.NewGuid();
         var sessionId = Guid.NewGuid();
-        
+
         var classEntity = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 };
         var session = new ClassSession
         {
-   Id = sessionId,
-  ClassId = classId,
-    Date = DateOnly.FromDateTime(DateTime.Today),
+            Id = sessionId,
+            ClassId = classId,
+            Date = DateOnly.FromDateTime(DateTime.Today),
             StartTime = new TimeOnly(10, 0),
-   EndTime = new TimeOnly(11, 0),
-      Schedule = DateTime.UtcNow,
-    Bookings = new List<Booking>
-{
+            EndTime = new TimeOnly(11, 0),
+            Schedule = DateTime.UtcNow,
+            Bookings =
+[
 new() { Id = Guid.NewGuid(), GymMemberId = Guid.NewGuid(), ClassId = classId, ClassSessionId = sessionId }
-          }
+          ]
         };
 
         classEntity.Sessions.Add(session);
@@ -436,36 +436,36 @@ new() { Id = Guid.NewGuid(), GymMemberId = Guid.NewGuid(), ClassId = classId, Cl
     [Fact]
     public async Task UpdateSessionAsync_ValidRequest_UpdatesSession()
     {
-    // Arrange
+        // Arrange
         var classId = Guid.NewGuid();
-   var sessionId = Guid.NewGuid();
-    
+        var sessionId = Guid.NewGuid();
+
         var classEntity = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 };
         var session = new ClassSession
-     {
-       Id = sessionId,
-     ClassId = classId,
-Date = DateOnly.FromDateTime(DateTime.Today),
- StartTime = new TimeOnly(10, 0),
-    EndTime = new TimeOnly(11, 0),
-Schedule = DateTime.UtcNow
-      };
+        {
+            Id = sessionId,
+            ClassId = classId,
+            Date = DateOnly.FromDateTime(DateTime.Today),
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
+            Schedule = DateTime.UtcNow
+        };
 
         classEntity.Sessions.Add(session);
         await _context.Classes.AddAsync(classEntity);
         await _context.SaveChangesAsync();
 
-    var updateRequest = new UpdateClassSessionRequest
+        var updateRequest = new UpdateClassSessionRequest
         {
             Date = DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
             StartTime = new TimeOnly(14, 0),
-  EndTime = new TimeOnly(15, 0)
-  };
+            EndTime = new TimeOnly(15, 0)
+        };
 
         // Act
         var result = await _service.UpdateSessionAsync(classId, sessionId, updateRequest);
 
-   // Assert
+        // Assert
         Assert.True(result);
         var updated = await _context.Set<ClassSession>().FindAsync(sessionId);
         Assert.Equal(updateRequest.Date, updated?.Date);
@@ -473,40 +473,40 @@ Schedule = DateTime.UtcNow
         Assert.Equal(updateRequest.EndTime, updated?.EndTime);
     }
 
-[Fact]
- public async Task UpdateSessionAsync_SessionWithBookings_ThrowsException()
-  {
+    [Fact]
+    public async Task UpdateSessionAsync_SessionWithBookings_ThrowsException()
+    {
         // Arrange
         var classId = Guid.NewGuid();
         var sessionId = Guid.NewGuid();
-   
+
         var classEntity = new Class { Id = classId, ClassType = "Yoga", MaxCapacity = 10 };
         var session = new ClassSession
-    {
-         Id = sessionId,
-     ClassId = classId,
-     Date = DateOnly.FromDateTime(DateTime.Today),
-   StartTime = new TimeOnly(10, 0),
-   EndTime = new TimeOnly(11, 0),
+        {
+            Id = sessionId,
+            ClassId = classId,
+            Date = DateOnly.FromDateTime(DateTime.Today),
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0),
             Schedule = DateTime.UtcNow,
-            Bookings = new List<Booking>
-   {
+            Bookings =
+   [
     new() { Id = Guid.NewGuid(), GymMemberId = Guid.NewGuid(), ClassId = classId, ClassSessionId = sessionId }
- }
+ ]
         };
 
-classEntity.Sessions.Add(session);
-     await _context.Classes.AddAsync(classEntity);
- await _context.SaveChangesAsync();
+        classEntity.Sessions.Add(session);
+        await _context.Classes.AddAsync(classEntity);
+        await _context.SaveChangesAsync();
 
-var updateRequest = new UpdateClassSessionRequest
+        var updateRequest = new UpdateClassSessionRequest
         {
             Date = DateOnly.FromDateTime(DateTime.Today.AddDays(1)), // Date change with bookings
-      StartTime = new TimeOnly(10, 0),
-          EndTime = new TimeOnly(11, 0)
+            StartTime = new TimeOnly(10, 0),
+            EndTime = new TimeOnly(11, 0)
         };
 
-     // Act & Assert
+        // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(
       async () => await _service.UpdateSessionAsync(classId, sessionId, updateRequest)
         );
@@ -516,6 +516,6 @@ var updateRequest = new UpdateClassSessionRequest
     {
         _context.Database.EnsureDeleted();
         _context.Dispose();
-     GC.SuppressFinalize(this);
-  }
+        GC.SuppressFinalize(this);
+    }
 }

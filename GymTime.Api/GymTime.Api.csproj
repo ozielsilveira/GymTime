@@ -22,4 +22,12 @@
     <ProjectReference Include="..\GymTime.Application\GymTime.Application.csproj" />
     <ProjectReference Include="..\GymTime.Infrastructure\GymTime.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\dev\GymTime\GymTime.Api\Controllers\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\dev\GymTime\GymTime.Api\Controllers\.editorconfig" />
+  </ItemGroup>
 </Project>

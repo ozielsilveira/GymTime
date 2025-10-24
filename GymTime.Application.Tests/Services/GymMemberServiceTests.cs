@@ -5,60 +5,60 @@ using GymTime.Domain.Enums;
 using GymTime.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace GymTime.Api.Tests.Services;
+namespace GymTime.Application.Tests.Services;
 
 public class GymMemberServiceTests : IDisposable
 {
     private readonly GymTimeDbContext _context;
     private readonly GymMemberService _service;
 
- public GymMemberServiceTests()
-{
-  var options = new DbContextOptionsBuilder<GymTimeDbContext>()
-  .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-          .Options;
+    public GymMemberServiceTests()
+    {
+        var options = new DbContextOptionsBuilder<GymTimeDbContext>()
+        .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
 
-      _context = new GymTimeDbContext(options);
-      _service = new GymMemberService(_context);
+        _context = new GymTimeDbContext(options);
+        _service = new GymMemberService(_context);
     }
 
     [Fact]
     public async Task GetAllAsync_ReturnsAllGymMembers()
     {
-  // Arrange
-   await _context.GymMembers.AddRangeAsync(
-    new GymMember { Id = Guid.NewGuid(), Name = "John", PlanType = PlanType.Monthly },
-       new GymMember { Id = Guid.NewGuid(), Name = "Jane", PlanType = PlanType.Annual }
- );
- await _context.SaveChangesAsync();
+        // Arrange
+        await _context.GymMembers.AddRangeAsync(
+         new GymMember { Id = Guid.NewGuid(), Name = "John", PlanType = PlanType.Monthly },
+            new GymMember { Id = Guid.NewGuid(), Name = "Jane", PlanType = PlanType.Annual }
+      );
+        await _context.SaveChangesAsync();
 
         // Act
         var result = await _service.GetAllAsync();
 
-  // Assert
+        // Assert
         Assert.Equal(2, result.Count());
     }
 
     [Fact]
-public async Task GetByIdAsync_MemberExists_ReturnsMember()
+    public async Task GetByIdAsync_MemberExists_ReturnsMember()
     {
         // Arrange
-   var id = Guid.NewGuid();
+        var id = Guid.NewGuid();
         await _context.GymMembers.AddAsync(
    new GymMember { Id = id, Name = "John", PlanType = PlanType.Monthly }
   );
-   await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         // Act
-   var result = await _service.GetByIdAsync(id);
+        var result = await _service.GetByIdAsync(id);
 
- // Assert
-    Assert.NotNull(result);
-  Assert.Equal("John", result.Name);
-      Assert.Equal(PlanType.Monthly, result.PlanType);
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("John", result.Name);
+        Assert.Equal(PlanType.Monthly, result.PlanType);
     }
 
-  [Fact]
+    [Fact]
     public async Task GetByIdAsync_MemberNotFound_ReturnsNull()
     {
         // Arrange
@@ -68,55 +68,55 @@ public async Task GetByIdAsync_MemberExists_ReturnsMember()
         var result = await _service.GetByIdAsync(id);
 
         // Assert
-    Assert.Null(result);
+        Assert.Null(result);
     }
 
     [Fact]
     public async Task CreateAsync_CreatesNewMember()
-{
+    {
         // Arrange
-    var request = new CreateGymMemberRequest
+        var request = new CreateGymMemberRequest
         {
-       Name = "John Doe",
- PlanType = PlanType.Quarterly
-    };
+            Name = "John Doe",
+            PlanType = PlanType.Quarterly
+        };
 
-   // Act
+        // Act
         var result = await _service.CreateAsync(request);
 
-      // Assert
-    Assert.NotNull(result);
-   Assert.Equal("John Doe", result.Name);
- Assert.Equal(PlanType.Quarterly, result.PlanType);
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("John Doe", result.Name);
+        Assert.Equal(PlanType.Quarterly, result.PlanType);
 
         var memberInDb = await _context.GymMembers.FindAsync(result.Id);
-      Assert.NotNull(memberInDb);
-     Assert.Equal("John Doe", memberInDb.Name);
+        Assert.NotNull(memberInDb);
+        Assert.Equal("John Doe", memberInDb.Name);
     }
 
-  [Fact]
+    [Fact]
     public async Task UpdateAsync_MemberExists_UpdatesAndReturnsTrue()
     {
-     // Arrange
-    var id = Guid.NewGuid();
+        // Arrange
+        var id = Guid.NewGuid();
         await _context.GymMembers.AddAsync(
      new GymMember { Id = id, Name = "John", PlanType = PlanType.Monthly }
         );
-  await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
-    var updateRequest = new UpdateGymMemberRequest
+        var updateRequest = new UpdateGymMemberRequest
         {
- Name = "John Updated",
-      PlanType = PlanType.Annual
- };
+            Name = "John Updated",
+            PlanType = PlanType.Annual
+        };
 
         // Act
         var result = await _service.UpdateAsync(id, updateRequest);
 
         // Assert
-     Assert.True(result);
-   var updated = await _context.GymMembers.FindAsync(id);
-  Assert.Equal("John Updated", updated?.Name);
+        Assert.True(result);
+        var updated = await _context.GymMembers.FindAsync(id);
+        Assert.Equal("John Updated", updated?.Name);
         Assert.Equal(PlanType.Annual, updated?.PlanType);
     }
 
@@ -124,35 +124,35 @@ public async Task GetByIdAsync_MemberExists_ReturnsMember()
     public async Task UpdateAsync_MemberNotFound_ReturnsFalse()
     {
         // Arrange
-    var id = Guid.NewGuid();
+        var id = Guid.NewGuid();
         var updateRequest = new UpdateGymMemberRequest
         {
-        Name = "John Updated",
- PlanType = PlanType.Annual
-  };
+            Name = "John Updated",
+            PlanType = PlanType.Annual
+        };
 
         // Act
         var result = await _service.UpdateAsync(id, updateRequest);
 
-  // Assert
+        // Assert
         Assert.False(result);
     }
 
     [Fact]
     public async Task DeleteAsync_MemberExists_DeletesAndReturnsTrue()
     {
-      // Arrange
-    var id = Guid.NewGuid();
+        // Arrange
+        var id = Guid.NewGuid();
         await _context.GymMembers.AddAsync(
         new GymMember { Id = id, Name = "John", PlanType = PlanType.Monthly }
         );
         await _context.SaveChangesAsync();
 
         // Act
-var result = await _service.DeleteAsync(id);
+        var result = await _service.DeleteAsync(id);
 
         // Assert
- Assert.True(result);
+        Assert.True(result);
         var deleted = await _context.GymMembers.FindAsync(id);
         Assert.Null(deleted);
     }
@@ -163,11 +163,11 @@ var result = await _service.DeleteAsync(id);
         // Arrange
         var id = Guid.NewGuid();
 
-   // Act
+        // Act
         var result = await _service.DeleteAsync(id);
 
         // Assert
-      Assert.False(result);
+        Assert.False(result);
     }
 
     public void Dispose()

@@ -1,10 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using GymTime.Application.Dtos.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace GymTime.Api.Controllers;
 
@@ -24,11 +24,15 @@ public class AuthController(IConfiguration configuration) : ControllerBase
     public IActionResult Login([FromBody] AuthenticationRequest request)
     {
         if (request is null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
+        {
             return BadRequest(new { message = "Invalid request." });
+        }
 
         var isValid = (request.Username == "admin" && request.Password == "password");
         if (!isValid)
+        {
             return Unauthorized(new { message = "Invalid credentials." });
+        }
 
         var jwtKey = _configuration["Jwt:SecretKey"] ?? throw new Exception("jwtKey not found.");
         var jwtIssuer = _configuration["Jwt:Issuer"] ?? throw new Exception("jwtIssuer not found.");

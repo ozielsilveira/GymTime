@@ -1,4 +1,4 @@
-﻿namespace GymTime.Application.Dtos.Report;
+namespace GymTime.Application.Dtos.Report;
 
 public class ReportDto
 {
@@ -34,5 +34,5 @@ public class ReportDto
     /// <remarks>
     /// Used for preference analysis and report generation. May be empty if there are no bookings.
     /// </remarks>
-    public List<string> FavoriteClassTypes { get; set; } = new List<string>();
+    public List<string> FavoriteClassTypes { get; set; } = [];
 }

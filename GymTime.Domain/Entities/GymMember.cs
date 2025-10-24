@@ -1,4 +1,4 @@
-﻿using GymTime.Domain.Enums;
+using GymTime.Domain.Enums;
 
 namespace GymTime.Domain.Entities;
 

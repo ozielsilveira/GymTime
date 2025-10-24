@@ -1,4 +1,4 @@
-﻿using GymTime.Application.Dtos.Bookings;
+using GymTime.Application.Dtos.Bookings;
 using GymTime.Application.Services.Interfaces;
 using GymTime.Domain.Entities;
 using GymTime.Domain.Repositories;
@@ -28,17 +28,34 @@ public class BookingService(
             .FirstOrDefaultAsync(cs => cs.Id == classSessionId);
 
         if (gymMember == null)
+        {
             return "Gym member not found.";
+        }
 
         if (classSession == null)
+        {
             return "Class session not found.";
+        }
 
         if (classSession.Class == null)
+        {
             return "Class not found.";
+        }
+
+        // Validate if the gym member already has a booking for this session
+        var existingBooking = await _context.Bookings
+            .AnyAsync(b => b.GymMemberId == gymMemberId && b.ClassSessionId == classSessionId);
+
+        if (existingBooking)
+        {
+            return "You already have a booking for this class session.";
+        }
 
         // Validate class session capacity
         if (!classSession.HasAvailableSlots())
+        {
             return "This class session is already full.";
+        }
 
         // Get gym member's bookings and count those scheduled for this month (based on session date, not booking creation date)
         var gymMemberBookings = await _bookingRepository.GetBookingsForGymMemberAsync(gymMemberId);
@@ -49,7 +66,9 @@ public class BookingService(
             b.ClassSession.Schedule.Year == now.Year);
 
         if (!gymMember.CanBook(currentMonthCount))
+        {
             return $"Booking limit reached for your {gymMember.PlanType} plan.";
+        }
 
         // Register booking
         var booking = new Booking
@@ -70,7 +89,9 @@ public class BookingService(
     {
         var existingBooking = await _bookingRepository.GetByIdAsync(bookingId);
         if (existingBooking == null)
+        {
             return "Booking not found.";
+        }
 
         await _bookingRepository.DeleteAsync(bookingId);
         return "Booking canceled successfully.";
@@ -106,7 +127,11 @@ public class BookingService(
     public async Task<BookingDto?> GetBookingByIdAsync(Guid bookingId)
     {
         var b = await _bookingRepository.GetByIdAsync(bookingId);
-        if (b == null) return null;
+        if (b == null)
+        {
+            return null;
+        }
+
         return MapToDto(b);
     }
 

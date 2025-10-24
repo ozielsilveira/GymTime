@@ -39,7 +39,11 @@ public class ClassController(IClassService service) : ControllerBase
     public async Task<ActionResult<ClassDto>> GetById(Guid id)
     {
         var dto = await _service.GetByIdAsync(id);
-        if (dto == null) return NotFound();
+        if (dto == null)
+        {
+            return NotFound();
+        }
+
         return Ok(dto);
     }
 
@@ -74,7 +78,10 @@ public class ClassController(IClassService service) : ControllerBase
     [ProducesResponseType(400)]
     public async Task<ActionResult<ClassDto>> Create([FromBody] CreateClassRequest request)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
 
         try
         {
@@ -103,12 +110,18 @@ public class ClassController(IClassService service) : ControllerBase
     [ProducesResponseType(404)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateClassRequest request)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
         try
         {
             var updated = await _service.UpdateAsync(id, request);
-            if (!updated) return NotFound();
+            if (!updated)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }
@@ -150,7 +163,10 @@ public class ClassController(IClassService service) : ControllerBase
     [ProducesResponseType(404)]
     public async Task<ActionResult<ClassDto>> UpdateWithSessions(Guid id, [FromBody] UpdateClassWithSessionsRequest request)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
         try
         {
@@ -182,7 +198,10 @@ public class ClassController(IClassService service) : ControllerBase
         try
         {
             var deleted = await _service.DeleteAsync(id);
-            if (!deleted) return NotFound();
+            if (!deleted)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }
@@ -219,7 +238,11 @@ public class ClassController(IClassService service) : ControllerBase
     public async Task<ActionResult<ClassSessionDto>> GetSession(Guid id, Guid sessionId)
     {
         var session = await _service.GetSessionByIdAsync(id, sessionId);
-        if (session == null) return NotFound();
+        if (session == null)
+        {
+            return NotFound();
+        }
+
         return Ok(session);
     }
 
@@ -249,7 +272,10 @@ public class ClassController(IClassService service) : ControllerBase
         Guid id,
         [FromBody] AddSessionsToClassRequest request)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
 
         try
         {
@@ -280,7 +306,10 @@ public class ClassController(IClassService service) : ControllerBase
         try
         {
             var deleted = await _service.DeleteSessionAsync(id, sessionId);
-            if (!deleted) return NotFound();
+            if (!deleted)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }
@@ -317,12 +346,18 @@ public class ClassController(IClassService service) : ControllerBase
         Guid sessionId,
         [FromBody] UpdateClassSessionRequest request)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
         try
         {
             var updated = await _service.UpdateSessionAsync(id, sessionId, request);
-            if (!updated) return NotFound();
+            if (!updated)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }

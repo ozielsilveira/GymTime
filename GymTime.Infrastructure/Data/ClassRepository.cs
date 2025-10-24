@@ -1,4 +1,4 @@
-﻿using GymTime.Domain.Entities;
+using GymTime.Domain.Entities;
 using GymTime.Domain.Repositories;
 using GymTime.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;

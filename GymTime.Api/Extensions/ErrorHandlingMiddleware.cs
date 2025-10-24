@@ -1,11 +1,11 @@
-using GymTime.Application.Dtos.Common;
 using System.Net;
 using System.Text.Json;
+using GymTime.Application.Dtos.Common;
 
 namespace GymTime.Api.Extensions;
 
 /// <summary>
-/// Middleware para capturar exceções não tratadas e retornar um payload consistente (ErrorResponseDto).
+/// Middleware para capturar exceÃ§Ãµes nÃ£o tratadas e retornar um payload consistente (ErrorResponseDto).
 /// </summary>
 public class ErrorHandlingMiddleware
 {
@@ -59,7 +59,9 @@ public class ErrorHandlingMiddleware
     {
         // For server errors, avoid leaking internal details.
         if (code == HttpStatusCode.InternalServerError)
+        {
             return "An unexpected error occurred.";
+        }
 
         return ex.Message;
     }

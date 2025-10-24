@@ -1,9 +1,9 @@
-﻿using GymTime.Application.Dtos.Bookings;
+using System.ComponentModel.DataAnnotations;
+using GymTime.Application.Dtos.Bookings;
 using GymTime.Application.Dtos.Common;
 using GymTime.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace GymTime.Api.Controllers;
 
@@ -25,10 +25,11 @@ public class BookingController(IBookingService bookingService) : ControllerBase
     /// Business rules:
     /// - Student must exist.
     /// - Class session must exist and have available capacity.
+    /// - A student cannot book the same class session more than once.
     /// - Student cannot exceed the monthly booking limit determined by their plan (Monthly=12, Quarterly=20, Annual=30).
     /// - Bookings are counted using UTC month/year.
     /// </remarks>
-    /// <response code="200">Booking successful or a descriptive message explaining why it failed (e.g., class session full, booking limit reached).</response>
+    /// <response code="200">Booking successful or a descriptive message explaining why it failed (e.g., class session full, booking limit reached, duplicate booking).</response>
     /// <response code="400">Invalid parameters (e.g.: empty GUID or invalid format).</response>
     /// <response code="404">Student or class session not found.</response>
     /// <response code="500">Internal server error.</response>
@@ -86,7 +87,9 @@ public class BookingController(IBookingService bookingService) : ControllerBase
     {
         var bookings = await _bookingService.GetBookingsForGymMemberAsync(gymMemberId);
         if (bookings == null || !bookings.Any())
+        {
             return NotFound(new ErrorResponseDto { Message = "No bookings found for the specified gym member." });
+        }
 
         return Ok(bookings);
     }
@@ -107,7 +110,9 @@ public class BookingController(IBookingService bookingService) : ControllerBase
     {
         var bookings = await _bookingService.GetBookingsForClassAsync(classId);
         if (bookings == null || !bookings.Any())
+        {
             return NotFound(new ErrorResponseDto { Message = "No bookings found for the specified class." });
+        }
 
         return Ok(bookings);
     }
@@ -128,7 +133,9 @@ public class BookingController(IBookingService bookingService) : ControllerBase
     {
         var booking = await _bookingService.GetBookingByIdAsync(bookingId);
         if (booking == null)
+        {
             return NotFound(new ErrorResponseDto { Message = "Booking not found." });
+        }
 
         return Ok(booking);
     }

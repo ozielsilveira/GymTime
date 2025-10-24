@@ -1,4 +1,4 @@
-﻿namespace GymTime.Domain.Enums;
+namespace GymTime.Domain.Enums;
 
 public enum PlanType
 {

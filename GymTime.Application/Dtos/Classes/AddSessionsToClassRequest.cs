@@ -40,5 +40,5 @@ public class AddSessionsToClassRequest
     /// </remarks>
     [Required(ErrorMessage = "DaysOfWeek is required")]
     [MinLength(1, ErrorMessage = "At least one day of week is required")]
-    public List<DayOfWeek> DaysOfWeek { get; set; } = new();
+    public List<DayOfWeek> DaysOfWeek { get; set; } = [];
 }

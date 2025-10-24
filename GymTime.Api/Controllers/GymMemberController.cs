@@ -40,7 +40,11 @@ public class GymMemberController(IGymMemberService service) : ControllerBase
     public async Task<ActionResult<GymMemberDto>> GetById(Guid id)
     {
         var dto = await _service.GetByIdAsync(id);
-        if (dto == null) return NotFound();
+        if (dto == null)
+        {
+            return NotFound();
+        }
+
         return Ok(dto);
     }
 
@@ -59,7 +63,10 @@ public class GymMemberController(IGymMemberService service) : ControllerBase
     [ProducesResponseType(400)]
     public async Task<ActionResult<GymMemberDto>> Create([FromBody] CreateGymMemberRequest request)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
 
         var dto = await _service.CreateAsync(request);
         return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
@@ -76,10 +83,16 @@ public class GymMemberController(IGymMemberService service) : ControllerBase
     [ProducesResponseType(404)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateGymMemberRequest request)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
 
         var updated = await _service.UpdateAsync(id, request);
-        if (!updated) return NotFound();
+        if (!updated)
+        {
+            return NotFound();
+        }
 
         return NoContent();
     }
@@ -94,7 +107,10 @@ public class GymMemberController(IGymMemberService service) : ControllerBase
     public async Task<IActionResult> Delete(Guid id)
     {
         var deleted = await _service.DeleteAsync(id);
-        if (!deleted) return NotFound();
+        if (!deleted)
+        {
+            return NotFound();
+        }
 
         return NoContent();
     }
