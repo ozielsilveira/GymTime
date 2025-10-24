@@ -2,38 +2,51 @@
 using GymTime.Application.Services.Interfaces;
 using GymTime.Domain.Entities;
 using GymTime.Domain.Repositories;
+using GymTime.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymTime.Application.Services;
 
 public class BookingService(
     IGymMemberRepository gymMemberRepository,
     IClassRepository classRepository,
-    IBookingRepository bookingRepository) : IBookingService
+    IBookingRepository bookingRepository,
+    GymTimeDbContext context) : IBookingService
 {
     private readonly IGymMemberRepository _gymMemberRepository = gymMemberRepository;
     private readonly IClassRepository _classRepository = classRepository;
     private readonly IBookingRepository _bookingRepository = bookingRepository;
+    private readonly GymTimeDbContext _context = context;
 
-    public async Task<string> BookClassAsync(Guid gymMemberId, Guid classId)
+    public async Task<string> BookClassAsync(Guid gymMemberId, Guid classSessionId)
     {
-        // Get gym member and class
+        // Get gym member and class session
         var gymMember = await _gymMemberRepository.GetByIdAsync(gymMemberId);
-        var classEntity = await _classRepository.GetByIdAsync(classId);
+        var classSession = await _context.Set<ClassSession>()
+            .Include(cs => cs.Class)
+            .Include(cs => cs.Bookings)
+            .FirstOrDefaultAsync(cs => cs.Id == classSessionId);
 
         if (gymMember == null)
             return "Gym member not found.";
 
-        if (classEntity == null)
+        if (classSession == null)
+            return "Class session not found.";
+
+        if (classSession.Class == null)
             return "Class not found.";
 
-        // Validate class capacity
-        if (!classEntity.HasAvailableSlots())
-            return "This class is already full.";
+        // Validate class session capacity
+        if (!classSession.HasAvailableSlots())
+            return "This class session is already full.";
 
-        // Get gym member's bookings for this month (month + year)
+        // Get gym member's bookings and count those scheduled for this month (based on session date, not booking creation date)
         var gymMemberBookings = await _bookingRepository.GetBookingsForGymMemberAsync(gymMemberId);
         var now = DateTime.UtcNow;
-        var currentMonthCount = gymMemberBookings.Count(b => b.CreatedAt.Month == now.Month && b.CreatedAt.Year == now.Year);
+        var currentMonthCount = gymMemberBookings.Count(b =>
+            b.ClassSession != null &&
+            b.ClassSession.Schedule.Month == now.Month &&
+            b.ClassSession.Schedule.Year == now.Year);
 
         if (!gymMember.CanBook(currentMonthCount))
             return $"Booking limit reached for your {gymMember.PlanType} plan.";
@@ -43,7 +56,8 @@ public class BookingService(
         {
             Id = Guid.NewGuid(),
             GymMemberId = gymMemberId,
-            ClassId = classId,
+            ClassId = classSession.ClassId,
+            ClassSessionId = classSessionId,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -69,9 +83,11 @@ public class BookingService(
             Id = b.Id,
             GymMemberId = b.GymMemberId,
             ClassId = b.ClassId,
+            ClassSessionId = b.ClassSessionId,
             CreatedAt = b.CreatedAt,
             GymMemberName = b.GymMember?.Name,
-            ClassType = b.Class?.ClassType
+            ClassType = b.Class?.ClassType,
+            SessionSchedule = b.ClassSession?.Schedule
         };
     }
 

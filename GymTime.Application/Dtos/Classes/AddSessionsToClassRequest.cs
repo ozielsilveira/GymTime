@@ -3,30 +3,10 @@ using System.ComponentModel.DataAnnotations;
 namespace GymTime.Application.Dtos.Classes;
 
 /// <summary>
-/// Request to create a new class.
+/// Request to add sessions to an existing class.
 /// </summary>
-public class CreateClassRequest
+public class AddSessionsToClassRequest
 {
-    /// <summary>
-    /// Class type/name (required, maximum 100 characters).
-    /// </summary>
-    /// <remarks>
-    /// Business rules: unique value per schedule in the domain (do not duplicate classes of the same type at the same time) - this validation is done in the service/repository.
-    /// </remarks>
-    [Required]
-    [StringLength(100)]
-    public string ClassType { get; set; } = default!;
-
-    /// <summary>
-    /// Maximum capacity (required, minimum 1).
-    /// </summary>
-    /// <remarks>
-    /// Business rules: greater than 0. Upper limits must be enforced according to gym policy.
-    /// </remarks>
-    [Required]
-    [Range(1, int.MaxValue)]
-    public int MaxCapacity { get; set; }
-
     /// <summary>
     /// Start date for session generation.
     /// </summary>
